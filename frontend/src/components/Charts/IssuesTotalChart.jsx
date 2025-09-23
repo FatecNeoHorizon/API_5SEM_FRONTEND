@@ -263,9 +263,9 @@ const IssuesTotalChart = () => {
             </div>
             <div className="card-body">
               <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={horasPorTaskData} layout="horizontal">
+                <BarChart data={horasPorTaskData}  layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
+                  <XAxis type="number" dataKey="horas"/>
                   <YAxis
                     dataKey="task"
                     type="category"
@@ -274,7 +274,7 @@ const IssuesTotalChart = () => {
                     tickFormatter={(v) => (typeof v === "string" && v.length > 18 ? `${v.slice(0, 18)}…` : v)}
                   />
                   <Tooltip content={<ProjetoTooltip />} />
-                  <Bar dataKey="horas" fill="#3B82F6" radius={[6,6,6,6]} />
+                  <Bar dataKey="horas" fill="#3B82F6" radius={[2,2,2,2]}/>
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -412,9 +412,9 @@ const IssuesTotalChart = () => {
             </div>
             <div className="card-body">
               <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={horasPorDevDetalhado} layout="horizontal">
+                <BarChart data={horasPorDevDetalhado} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
+                  <XAxis type="number" dataKey="horas" />
                   <YAxis
                     dataKey="dev"
                     type="category"
@@ -423,7 +423,7 @@ const IssuesTotalChart = () => {
                     tickFormatter={(v) => (typeof v === "string" && v.length > 20 ? `${v.slice(0, 20)}…` : v)}
                   />
                   <Tooltip content={<DevTooltip />} />
-                  <Bar dataKey="horas" fill="#fd7e14" radius={[6,6,6,6]} />
+                  <Bar dataKey="horas" fill="#fd7e14" radius={[2,2,2,2]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
