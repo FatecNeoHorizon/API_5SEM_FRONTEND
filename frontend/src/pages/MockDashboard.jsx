@@ -3,6 +3,7 @@ import axios from "axios";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from "recharts";
+import CustosComp from "../components/Custos/CustosComp.jsx"
 
 const MockDashboard = () => {
   const [users, setUsers] = useState([]);
