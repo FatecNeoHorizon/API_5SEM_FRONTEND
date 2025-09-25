@@ -1,5 +1,6 @@
 import api from "../axios";
 import { HorasPorDev } from "./horasPorDev";
+import { HorasPorProjeto } from "./horasPorProjeto";
 
 export class IssuesService {
   static async getTotalIssues() {
@@ -20,14 +21,7 @@ export class IssuesService {
           emAtraso: 8,
           emAndamento: 16
         },
-        horasTrabalhadasPorTask: [
-          { task: "E-Commerce", horas: 120 },
-          { task: "Dashboard", horas: 85 },
-          { task: "API Gateway", horas: 95 },
-          { task: "Mobile App", horas: 110 },
-          { task: "CRM System", horas: 75 },
-          { task: "Analytics", horas: 60 }
-        ],
+        horasTrabalhadasPorTask: await HorasPorProjeto.getHorasPorProjeto(),
         andamentoTarefas: {
           "E-Commerce": { porcentagem: 30 },
           "Dashboard": { porcentagem: 25 },
