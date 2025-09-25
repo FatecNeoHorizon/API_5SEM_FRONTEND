@@ -1,11 +1,22 @@
 import React from "react";
 import Layout from "../components/Layout/Layout";
-import MockDashboard from "./MockDashboard";
+import IssuesTotalChart from "../components/Charts/IssuesTotalChart";
+import IssuesProjetoChart from "../components/Charts/IssuesProjetoChart";
 
 const Dashboard = () => {
   return (
     <Layout>
-      <MockDashboard />  
+      <div className="container-fluid py-4">
+        <div className="row g-4">
+          <div className="col-md-4">
+            <IssuesTotalChart />
+          </div>
+
+          <div className="col-md-3">
+            <IssuesProjetoChart />
+          </div>
+        </div>
+      </div>
     </Layout>
   );
 };
