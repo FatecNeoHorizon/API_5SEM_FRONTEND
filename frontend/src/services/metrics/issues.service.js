@@ -1,4 +1,5 @@
 import api from "../axios";
+import { HorasPorDev } from "./horasPorDev";
 
 export class IssuesService {
   static async getTotalIssues() {
@@ -34,40 +35,8 @@ export class IssuesService {
           "Mobile App": { porcentagem: 15 },
           "Outros": { porcentagem: 10 }
         },
-        horasPorDev: [
-          {
-            dev: "João Silva",
-            horas: 168,
-            atividades: ["Frontend", "API Integration", "Testing"],
-            diasTrabalhados: 21,
-            horasMediaPorDia: 8,
-            projetosAtivos: ["E-Commerce", "Dashboard"]
-          },
-          {
-            dev: "Maria Santos",
-            horas: 152,
-            atividades: ["Backend", "Database", "DevOps"],
-            diasTrabalhados: 19,
-            horasMediaPorDia: 8,
-            projetosAtivos: ["API Gateway", "CRM System"]
-          },
-          {
-            dev: "Pedro Costa",
-            horas: 144,
-            atividades: ["Mobile", "UI/UX", "Design"],
-            diasTrabalhados: 18,
-            horasMediaPorDia: 8,
-            projetosAtivos: ["Mobile App", "E-Commerce"]
-          },
-          {
-            dev: "Ana Lima",
-            horas: 136,
-            atividades: ["Analytics", "Reports", "QA"],
-            diasTrabalhados: 17,
-            horasMediaPorDia: 8,
-            projetosAtivos: ["Analytics", "Dashboard"]
-          }
-        ],
+        // 👨‍💻 Horas por Desenvolvedor
+        horasPorDev: await HorasPorDev.getHorasPorDev(),
         tempoPorMes: [
           { mes: "Janeiro", tempo: 280 },
           { mes: "Fevereiro", tempo: 320 },
