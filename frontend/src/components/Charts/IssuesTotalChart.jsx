@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import IssuesService from "../../services/metrics/issues.service";
 import HorasDevChart from "./HorasDevChart";
+import HoraProjetoChart from "./HorasProjetoChart";
 
 const IssuesTotalChart = () => {
   const [data, setData] = useState(null);
@@ -258,28 +259,7 @@ const IssuesTotalChart = () => {
 
       <div className="row mb-4">
         <div className="col-md-4">
-          <div className="card h-100">
-            <div className="card-header">
-              <h6 className="mb-0 fs-5 fw-semibold">📊 Horas trabalhadas por projeto</h6>
-            </div>
-            <div className="card-body">
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={horasPorTaskData}  layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" dataKey="horas"/>
-                  <YAxis
-                    dataKey="task"
-                    type="category"
-                    width={120}
-                    tick={{ fontSize: 12 }}
-                    tickFormatter={(v) => (typeof v === "string" && v.length > 18 ? `${v.slice(0, 18)}…` : v)}
-                  />
-                  <Tooltip content={<ProjetoTooltip />} />
-                  <Bar dataKey="horas" fill="#3B82F6" radius={[2,2,2,2]}/>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+          <HoraProjetoChart/>
         </div>
 
         <div className="col-md-4">
