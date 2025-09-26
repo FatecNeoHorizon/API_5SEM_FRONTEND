@@ -70,7 +70,7 @@ export default function CostsChart() {
       await fetchEvolution(gran);
     };
     init();
-  }, []); // monta uma vez; evolução muda via botões sem recarregar os demais
+  }, []); // mounts once; evolution changes via buttons without reloading others
 
   const devsUnicos = useMemo(() => porDev.length || 0, [porDev]);
   const totalHoras = useMemo(
