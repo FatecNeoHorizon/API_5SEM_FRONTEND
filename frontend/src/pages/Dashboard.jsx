@@ -1,6 +1,7 @@
 import React from "react";
 import Layout from "../components/Layout/Layout";
 import IssuesTotalChart from "../components/Charts/IssuesTotalChart";
+import CostsChart from "../components/Charts/CostsChart";
 import IssuesProjetoChart from "../components/Charts/IssuesProjetoChart";
 
 const Dashboard = () => {
@@ -16,6 +17,10 @@ const Dashboard = () => {
             <IssuesProjetoChart />
           </div>
         </div>
+      </div>
+
+      <div className="container-fluid py-4">
+        <CostsChart/>
       </div>
     </Layout>
   );
