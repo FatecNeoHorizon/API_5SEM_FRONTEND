@@ -13,6 +13,7 @@ import {
   Cell
 } from "recharts";
 import IssuesService from "../../services/metrics/issues.service";
+import HorasDevChart from "./HorasDevChart";
 
 const IssuesTotalChart = () => {
   const [data, setData] = useState(null);
@@ -406,28 +407,7 @@ const IssuesTotalChart = () => {
         </div>
 
         <div className="col-md-4">
-          <div className="card h-100">
-            <div className="card-header">
-              <h6 className="mb-0 fs-5 fw-semibold">👨‍💻 Horas por Desenvolvedor</h6>
-            </div>
-            <div className="card-body">
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={horasPorDevDetalhado} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" dataKey="horas" />
-                  <YAxis
-                    dataKey="dev"
-                    type="category"
-                    width={140}
-                    tick={{ fontSize: 12 }}
-                    tickFormatter={(v) => (typeof v === "string" && v.length > 20 ? `${v.slice(0, 20)}…` : v)}
-                  />
-                  <Tooltip content={<DevTooltip />} />
-                  <Bar dataKey="horas" fill="#fd7e14" radius={[2,2,2,2]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+          <HorasDevChart />
         </div>
       </div>
     </div>
