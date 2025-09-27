@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { getIssuesPorPeriodo } from "../../services/metrics/issues.periodo";
 
-const IssuesPeriodo = () => {
+const IssuesPeriodoChart = () => {
   const [periodoFiltro, setPeriodoFiltro] = useState("mes");
   const [dadosPeriodo, setDadosPeriodo] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,6 @@ const IssuesPeriodo = () => {
     fetchData();
   }, [periodoFiltro]);
 
-  // rótulos customizados: semana, mes, ano, retrospectiva
   const opcoes = [
     { key: "dia", label: "Semana" },
     { key: "semana", label: "Mês" },
@@ -104,4 +103,4 @@ const IssuesPeriodo = () => {
   );
 };
 
-export default IssuesPeriodo;
+export default IssuesPeriodoChart;
