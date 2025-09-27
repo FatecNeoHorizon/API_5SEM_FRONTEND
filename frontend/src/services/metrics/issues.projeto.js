@@ -3,8 +3,8 @@ export class IssuesProjetoService {
   static async getTotalIssues() {
     try {
       const [proj1, proj2] = await Promise.all([
-        api.get("/issue/por-projeto/1"),
-        api.get("/issue/por-projeto/2")
+        api.get("/fato-issue/por-projeto/1"),
+        api.get("/fato-issue/por-projeto/2")
       ]);
 
       return {
