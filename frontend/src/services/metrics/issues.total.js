@@ -3,7 +3,7 @@ import api from "../axios";
 export class IssuesTotalService {
   static async getTotalIssues() {
     try {
-      const response = await api.get("/issue/total");
+      const response = await api.get("/fato-issue/total");
       return {
         success: true,
         data: { total: response.data }
