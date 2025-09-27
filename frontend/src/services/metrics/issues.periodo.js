@@ -45,7 +45,7 @@ export const getIssuesPorPeriodo = async (periodo) => {
       const qtdUltimasSemanas = 4;
       const ultimasSemanas = lista.slice(-qtdUltimasSemanas);
       lista = ultimasSemanas.map((item, index) => ({
-        periodo: String(index + 1),
+        periodo: `Sem ${index + 1}`,
         issues: item.issues,
       }));
     }
