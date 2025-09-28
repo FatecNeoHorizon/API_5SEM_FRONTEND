@@ -7,6 +7,7 @@ import IssuesTotalChart from "../components/Charts/IssuesTotalChart";
 import CostsChart from "../components/Charts/CostsChart";
 import IssuesProjetoChart from "../components/Charts/IssuesProjetoChart";
 import IssuesPeriodoChart from "../components/Charts/IssuesPeriodoChart";
+import DevHoursByActivityDayChart from "../components/Charts/DevHoursByActivityDayChart";
 
 const Dashboard = () => {
   return (
@@ -36,6 +37,9 @@ const Dashboard = () => {
               </div>
               <div className="col-10">
                 <IssuesPeriodoChart />
+              </div>
+              <div>
+                <DevHoursByActivityDayChart/>
               </div>
             </div>
           </div>
