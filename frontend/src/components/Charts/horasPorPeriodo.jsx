@@ -17,10 +17,10 @@ const HorasPorPeriodo = () => {
   const [error, setError] = useState(null);
 
   const opcoes = [
-    { key: "dia", label: "Semana" },
-    { key: "semana", label: "Mês" },
-    { key: "mes", label: "Ano" },
-    { key: "ano", label: "Retrospectiva" },
+    { key: "dia", label: "Dia" },
+    { key: "semana", label: "Semana" },
+    { key: "mes", label: "Mês" },
+    { key: "ano", label: "Ano" },
   ];
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const HorasPorPeriodo = () => {
                   formatter={(value) => [value, "Horas"]}
                   labelFormatter={(label) => `Período: ${label}`}
                 />
-                <Bar dataKey="atividades" fill="#06B6D4" />
+                <Bar dataKey="atividades" fill="#8f41d8d5" />
               </BarChart>
             </ResponsiveContainer>
           )}
