@@ -82,39 +82,47 @@ export const getHorasPorPeriodo = async (periodo) => {
     return acc;
   }, {});
 
-  const resultado = Object.entries(agrupado).map(([periodo, atividades]) => ({
+  let resultado = Object.entries(agrupado).map(([periodo, atividades]) => ({
     periodo,
     atividades,
   }));
 
-  resultado.sort((a, b) => {
-    if (periodo === "dia") {
+  if (periodo === "mes") {
+    const nomesMeses = [
+      "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+      "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+    ];
+
+    resultado = resultado.map(item => {
+      const [mes, ano] = item.periodo.split("/").map(Number);
+      return {
+        periodo: `${nomesMeses[mes - 1]}/${ano}`,
+        atividades: item.atividades
+      };
+    });
+
+    resultado.sort((a, b) => {
+      const [mesA, anoA] = a.periodo.split("/");
+      const [mesB, anoB] = b.periodo.split("/");
+      const indexA = nomesMeses.indexOf(mesA);
+      const indexB = nomesMeses.indexOf(mesB);
+      return Number(anoA) - Number(anoB) || indexA - indexB;
+    });
+  }
+
+  if (periodo === "dia") {
+    resultado.sort((a, b) => {
       const [diaA, mesA, anoA] = a.periodo.split("/").map(Number);
       const [diaB, mesB, anoB] = b.periodo.split("/").map(Number);
       if (anoA !== anoB) return anoA - anoB;
       if (mesA !== mesB) return mesA - mesB;
       return diaA - diaB;
-    }
-
-    if (periodo === "semana") {
-      const semA = Number(a.periodo.replace("Sem ", ""));
-      const semB = Number(b.periodo.replace("Sem ", ""));
-      return semA - semB;
-    }
-
-    if (periodo === "mes") {
-      const [mesA, anoA] = a.periodo.split("/").map(Number);
-      const [mesB, anoB] = b.periodo.split("/").map(Number);
-      if (anoA !== anoB) return anoA - anoB;
-      return mesA - mesB;
-    }
-
-    if (periodo === "ano") {
-      return Number(a.periodo) - Number(b.periodo);
-    }
-
-    return 0;
-  });
+    });
+  } else if (periodo === "semana") {
+    resultado.sort((a, b) => Number(a.periodo.replace("Sem ", "")) - Number(b.periodo.replace("Sem ", "")));
+  } else if (periodo === "ano") {
+    resultado.sort((a, b) => Number(a.periodo) - Number(b.periodo));
+  }
 
   return resultado;
 };

@@ -211,15 +211,15 @@ export default function CostsChart() {
                   <AreaChart data={evolucao}>
                     <defs>
                       <linearGradient id="fillCusto" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#0d6efd" stopOpacity={0.35} />
-                        <stop offset="95%" stopColor="#0d6efd" stopOpacity={0.05} />
+                        <stop offset="5%" stopColor="#5B8FF9" stopOpacity={0.35} />
+                        <stop offset="95%" stopColor="#5B8FF9" stopOpacity={0.05} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="periodo" angle={-25} textAnchor="end" height={60} tick={{ fontSize: 12 }} />
                     <YAxis width={80} tickFormatter={(v) => currency(v)} />
                     <Tooltip formatter={(v) => [currency(v), "Custo"]} labelStyle={{ color: "#333" }} />
-                    <Area type="monotone" dataKey="custo" stroke="#0d6efd" fill="url(#fillCusto)" strokeWidth={2} />
+                    <Area type="monotone" dataKey="custo" stroke="#5B8FF9" fill="url(#fillCusto)" strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -250,7 +250,7 @@ export default function CostsChart() {
                       tickFormatter={(v) => (typeof v === "string" && v.length > 20 ? `${v.slice(0, 20)}…` : v)}
                     />
                     <Tooltip formatter={(v) => [currency(v), "Custo"]} />
-                    <Bar dataKey="total" fill="#20c997" radius={[6, 6, 6, 6]} />
+                    <Bar dataKey="total" fill="#5AD8A6" radius={[6, 6, 6, 6]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -294,7 +294,7 @@ export default function CostsChart() {
                         name === "custo" ? [currency(value), "Custo (R$)"] : [`${value}h`, "Horas"]
                       }
                     />
-                    <Bar yAxisId="left" dataKey="horas" name="Horas" fill="#6f42c1" radius={[6, 6, 0, 0]} />
+                    <Bar yAxisId="left" dataKey="horas" name="Horas" fill="#A97FFF" radius={[6, 6, 0, 0]} />
                     <Bar yAxisId="right" dataKey="custo" name="Custo" fill="#0dcaf0" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -326,7 +326,7 @@ export default function CostsChart() {
                       tickFormatter={(v) => (typeof v === "string" && v.length > 18 ? `${v.slice(0, 18)}…` : v)}
                     />
                     <Tooltip formatter={(v) => [currency(v), "Custo"]} />
-                    <Bar dataKey="custo" fill="#fd7e14" radius={[6, 6, 6, 6]} />
+                    <Bar dataKey="custo" fill="#F6BD16" radius={[6, 6, 6, 6]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

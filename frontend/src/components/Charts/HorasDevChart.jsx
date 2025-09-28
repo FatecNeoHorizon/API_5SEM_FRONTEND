@@ -56,7 +56,7 @@ export default function HorasDevChart() {
                                 tickFormatter={(v) => (typeof v === "string" && v.length > 20 ? `${v.slice(0, 20)}…` : v)}
                             />
                             <Tooltip content={<DevTooltip />} />
-                            <Bar dataKey="horas" fill="#fd7e14" radius={[2, 2, 2, 2]} />
+                            <Bar dataKey="horas" fill="#F6B26B" radius={[2, 2, 2, 2]} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>

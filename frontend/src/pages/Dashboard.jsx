@@ -6,22 +6,40 @@ import HoraProjetoChart from "../components/Charts/HorasProjetoChart";
 import IssuesTotalChart from "../components/Charts/IssuesTotalChart";
 import CostsChart from "../components/Charts/CostsChart";
 import IssuesProjetoChart from "../components/Charts/IssuesProjetoChart";
+import IssuesPeriodoChart from "../components/Charts/IssuesPeriodoChart";
 
 const Dashboard = () => {
   return (
     <Layout>
 
-      <div className="container-fluid py-4">
-        <div className="row g-4">
-          <div className="col-md-4">
-            <IssuesTotalChart />
+        <div className="container-fluid p-3">
+          <div>
+            <button
+              className="btn btn-secondary px-sm-3 fs-4"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapse_issues_container"
+              aria-expanded="false"
+              aria-controls="collapse_issues_container"
+            >
+              Issues
+            </button>
           </div>
-
-          <div className="col-md-3">
-            <IssuesProjetoChart />
+          <hr />
+          <div className="collapse show" id="collapse_issues_container">
+            <div className="row g-4">
+              <div className="full-width">
+                <IssuesTotalChart />
+              </div>
+              <div className="col-2">
+                <IssuesProjetoChart />
+              </div>
+              <div className="col-10">
+                <IssuesPeriodoChart />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
       
       <div className="container-fluid py-4">
         <div className="container-fluid p-3">
