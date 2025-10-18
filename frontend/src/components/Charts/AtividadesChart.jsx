@@ -74,7 +74,6 @@ export default function AtividadesChart() {
     return PALETTE[idx];
   };
 
-  // Fetch inicial: total de atividades e dados por projeto (executa apenas no mount)
   useEffect(() => {
     const fetchInitial = async () => {
       setLoading(true);
@@ -95,7 +94,6 @@ export default function AtividadesChart() {
     fetchInitial();
   }, []);
 
-  // Fetch específico para o gráfico por período. Isso é executado sempre que o filtro muda
   useEffect(() => {
     let mounted = true;
     const fetchPeriodo = async () => {

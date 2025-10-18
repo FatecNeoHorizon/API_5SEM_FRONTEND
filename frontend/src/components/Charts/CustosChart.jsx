@@ -126,6 +126,7 @@ export default function CustosChart() {
   return (
     <div className="container-fluid p-3">
 
+      {/* Custo Total */}
       <div className="collapse show" id="collapse_cost_container">
         <div className="row g-3 align-items-stretch mb-3">
           <div className="col-md-4">
@@ -136,6 +137,8 @@ export default function CustosChart() {
               </div>
             </div>
           </div>
+
+          {/* Nº de Desenvolvedores */}
           <div className="col-md-4">
             <div className="card h-100 text-center shadow-sm">
               <div className="card-body d-flex flex-column justify-content-center">
@@ -144,6 +147,8 @@ export default function CustosChart() {
               </div>
             </div>
           </div>
+
+          {/* Média - Custo/Hora */}
           <div className="col-md-4">
             <div className="card h-100 text-center shadow-sm">
               <div className="card-body d-flex flex-column justify-content-center">
@@ -156,6 +161,7 @@ export default function CustosChart() {
           </div>
         </div>
 
+        {/* Evolução do Custo ao Longo do Tempo */}
         <div className="row g-3 mb-3">
           <div className="col-md-8">
             <div className="card h-100">
@@ -216,6 +222,7 @@ export default function CustosChart() {
             </div>
           </div>
 
+        {/* Custo por Projeto */}
           <div className="col-md-4">
             <div className="card h-100">
               <div className="card-header">
@@ -248,6 +255,7 @@ export default function CustosChart() {
           </div>
         </div>
 
+        {/* Horas vs Custo por Desenvolvedor */}
         <div className="row g-3">
           <div className="col-md-6">
             <div className="card h-100">
@@ -292,6 +300,7 @@ export default function CustosChart() {
             </div>
           </div>
 
+        {/* Custo Total por Desenvolvedor */}
           <div className="col-md-6">
             <div className="card h-100">
               <div className="card-header">
