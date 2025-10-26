@@ -22,7 +22,7 @@ export const getHorasPorProjeto = async () => {
       const res = await axios.get(`${API_BASE}/filter`, { params });
       const fatoCustoHora = res.data || [];
 
-      const totalHoras = fatoCustoHora.reduce((acc, cur) => acc + cur.horas_quantidade, 0);
+      const totalHoras = fatoCustoHora.reduce((acc, cur) => acc + cur.horasQuantidade, 0);
 
       if (totalHoras > 0) {
         listaHorasPorProjeto.push({ task: projeto.nome, horas: totalHoras });
@@ -55,7 +55,7 @@ export const getHorasPorDev = async () => {
       const res = await axios.get(`${API_BASE}/filter`, { params });
       const fatoCustoHora = res.data || [];
 
-      const totalHoras = fatoCustoHora.reduce((acc, cur) => acc + cur.horas_quantidade, 0);
+      const totalHoras = fatoCustoHora.reduce((acc, cur) => acc + cur.horasQuantidade, 0);
 
       if (totalHoras > 0) {
         listaHorasPorDev.push({ dev: dev.nome, horas: totalHoras });
@@ -109,12 +109,12 @@ export const getHorasPorPeriodo = async (periodo = "mes") => {
       const mapaHoras = {};
       ultimos7Dias.forEach(dia => (mapaHoras[dia] = 0));
       dadosFiltrados.forEach(d => {
-        mapaHoras[d.dimPeriodo.dia] = d.horas_quantidade;
+        mapaHoras[d.dimPeriodo.dia] = d.horasQuantidade;
       });
 
       dadosFiltrados = ultimos7Dias.map(dia => ({
         dimPeriodo: { dia, mes: ultimoMes, ano: ultimoAno },
-        horas_quantidade: mapaHoras[dia],
+        horasQuantidade: mapaHoras[dia],
       }));
     }
 
@@ -137,7 +137,7 @@ export const getHorasPorPeriodo = async (periodo = "mes") => {
         default:
           chave = `${p.mes}/${p.ano}`;
       }
-      acc[chave] = (acc[chave] || 0) + item.horas_quantidade;
+      acc[chave] = (acc[chave] || 0) + item.horasQuantidade;
       return acc;
     }, {});
 
