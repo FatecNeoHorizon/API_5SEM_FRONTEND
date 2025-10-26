@@ -1,75 +1,111 @@
 import React from "react";
+import { listDevs, updateDev, listFatos, updateFato } from "../../services/metrics/modal.service";
 
-/**
- * Modal de custo/hora dos desenvolvedores (dados mokados)
- * - Duas colunas: Desenvolvedor | Custo por hora (R$)
- * - Scroll vertical no body
- * - Confirmação antes de salvar
- * - Mantém estética Bootstrap e sobrepõe a tela sem sair da página
- */
-
-const MOCK_DEVS = [
-  { id: 1, name: "Ana Ribeiro", hourlyCost: 120.0 },
-  { id: 2, name: "Bruno Costa", hourlyCost: 95.5 },
-  { id: 3, name: "Carla Nunes", hourlyCost: 110.0 },
-  { id: 4, name: "Diego Martins", hourlyCost: 87.0 },
-  { id: 5, name: "Eduarda Lima", hourlyCost: 102.4 },
-  { id: 6, name: "Fernando Alves", hourlyCost: 140.0 },
-  { id: 7, name: "Gabriela Souza", hourlyCost: 98.0 },
-  { id: 8, name: "Henrique Lopes", hourlyCost: 115.0 },
-  { id: 9, name: "Isabela Rocha", hourlyCost: 99.9 },
-  { id: 10, name: "João Pedro", hourlyCost: 105.0 },
-  { id: 11, name: "Karen Dias", hourlyCost: 125.0 },
-  { id: 12, name: "Lucas Ferreira", hourlyCost: 92.0 },
-];
+const EX_IDS = new Set([1]);
+const EX_NAMES = new Set(["Não atribuido", "Nao atribuido", "Não Atribuido", "Nao Atribuido"]);
+const filtraNaoAtribuido = (arr) =>
+  Array.isArray(arr)
+    ? arr.filter((d) => !EX_IDS.has(Number(d.id)) && !EX_NAMES.has(String(d.nome ?? "").trim()))
+    : arr;
 
 export default function ModalCustoDev({ show, onClose, onSaveSuccess }) {
-  const [rows, setRows] = React.useState(MOCK_DEVS);
+  const [rows, setRows] = React.useState([]);
+  const [snapshot, setSnapshot] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
-  const [feedback, setFeedback] = React.useState({ type: "", message: "" });
+  const [alert, setAlert] = React.useState({ type: "", msg: "" });
 
-  // reabre com dados mokados sempre que show = true
   React.useEffect(() => {
-    if (show) {
-      setRows(MOCK_DEVS.map((d) => ({ ...d })));
-      setSaving(false);
-      setFeedback({ type: "", message: "" });
-    }
+    if (!show) return;
+    (async () => {
+      setLoading(true);
+      setAlert({ type: "", msg: "" });
+      try {
+        const devs = await listDevs();
+        const normalized = (devs || []).map((d) => ({
+          id: d.id,
+          nome: d.nome ?? "",
+          custoHora: Number(d.custoHora ?? 0),
+        }));
+        const filtrados = filtraNaoAtribuido(normalized);
+        setRows(filtrados);
+        setSnapshot(filtrados.map((d) => ({ ...d })));
+      } catch {
+        setAlert({ type: "danger", msg: "Falha ao carregar desenvolvedores." });
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [show]);
 
-  function handleChange(id, value) {
-    setRows((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, hourlyCost: value } : r))
-    );
+  function onChangeCost(id, value) {
+    const v = value === "" ? "" : Number(value);
+    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, custoHora: v } : r)));
   }
 
   async function handleSave(e) {
     e.preventDefault();
-    setFeedback({ type: "", message: "" });
+    if (!window.confirm("Confirmar salvamento e recálculo dos custos?")) return;
 
-    // confirmação
-    const ok = window.confirm("Confirmar salvamento dos custos por hora?");
-    if (!ok) return;
+    const changed = rows.filter((r) => {
+      const prev = snapshot.find((s) => s.id === r.id);
+      return prev && Number(prev.custoHora) !== Number(r.custoHora);
+    });
+
+    if (changed.length === 0) {
+      setAlert({ type: "info", msg: "Nenhuma alteração detectada." });
+      return;
+    }
+
+    setSaving(true);
+    setAlert({ type: "", msg: "" });
 
     try {
-      setSaving(true);
-      // Aqui futuramente chamar API para persistir:
-      // await api.saveMany(rows)
-      await new Promise((res) => setTimeout(res, 600)); // simula latência
+      await Promise.all(
+        changed.map((d) =>
+          updateDev({ id: d.id, nome: d.nome, custoHora: Number(d.custoHora) })
+        )
+      );
 
-      setFeedback({ type: "success", message: "Custos atualizados com sucesso!" });
+      const fatos = await listFatos();
+      const alteredIds = new Set(changed.map((d) => d.id));
+      const custoHoraMap = new Map(changed.map((d) => [d.id, Number(d.custoHora)]));
+
+      const toUpdate = (fatos || []).filter(
+        (f) => f?.dimDev?.id && alteredIds.has(Number(f.dimDev.id))
+      );
+
+      const payloads = toUpdate.map((f) => {
+        const horas = Number(f.horasQuantidade ?? f.horas ?? 0);
+        const novoCustoHora = custoHoraMap.get(Number(f.dimDev.id)) ?? 0;
+        const novoCusto = Number(novoCustoHora) * horas;
+
+        return {
+          ...f,
+          custo: novoCusto,
+          dimDev: { id: f.dimDev.id, ...(f.dimDev.nome ? { nome: f.dimDev.nome } : {}) },
+          ...(f.dimProjeto?.id ? { dimProjeto: { id: f.dimProjeto.id } } : {}),
+          ...(f.dimPeriodo?.id ? { dimPeriodo: { id: f.dimPeriodo.id } } : {}),
+        };
+      });
+
+      await Promise.all(payloads.map((f) => updateFato(f)));
+
+      setAlert({ type: "success", msg: "Custos atualizados com sucesso!" });
+      setSnapshot(rows.map((d) => ({ ...d })));
       if (typeof onSaveSuccess === "function") onSaveSuccess();
-    } catch (err) {
-      setFeedback({
+      if (typeof onClose === "function") onClose();
+      setTimeout(() => window.location.reload(), 300);
+    } catch {
+      setAlert({
         type: "danger",
-        message: "Falha ao salvar. Tente novamente.",
+        msg: "Falha ao salvar alterações. Verifique as rotas e tente novamente.",
       });
     } finally {
       setSaving(false);
     }
   }
 
-  // classes para mostrar/ocultar como modal bootstrap (sem react-bootstrap)
   const modalClass = `modal fade ${show ? "show d-block" : ""}`;
   const backdrop = show ? <div className="modal-backdrop fade show"></div> : null;
 
@@ -84,69 +120,50 @@ export default function ModalCustoDev({ show, onClose, onSaveSuccess }) {
             </div>
 
             <form onSubmit={handleSave} noValidate>
-              <div
-                className="modal-body"
-                style={{
-                  // ocupa boa parte da viewport mantendo a “página”
-                  height: "70vh",
-                  overflowY: "auto",
-                }}
-              >
-                {/* feedback */}
-                {feedback.message && (
-                  <div className={`alert alert-${feedback.type} mb-3`} role="alert">
-                    {feedback.message}
+              <div className="modal-body" style={{ height: "70vh", overflowY: "auto" }}>
+                {alert.msg && <div className={`alert alert-${alert.type}`}>{alert.msg}</div>}
+
+                {loading ? (
+                  <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 200 }}>
+                    <div className="spinner-border" role="status" />
+                  </div>
+                ) : (
+                  <div className="table-responsive">
+                    <table className="table align-middle">
+                      <thead className="table-light" style={{ position: "sticky", top: 0, zIndex: 1 }}>
+                        <tr>
+                          <th style={{ width: "60%" }}>Desenvolvedor</th>
+                          <th style={{ width: "40%" }}>Custo por hora (R$)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {rows.map((dev) => (
+                          <tr key={dev.id}>
+                            <td>{dev.nome}</td>
+                            <td>
+                              <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                className="form-control"
+                                value={dev.custoHora}
+                                onChange={(e) => onChangeCost(dev.id, e.target.value)}
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )}
-
-                <div className="table-responsive">
-                  <table className="table align-middle">
-                    <thead className="table-light" style={{ position: "sticky", top: 0, zIndex: 1 }}>
-                      <tr>
-                        <th style={{ width: "60%" }}>Desenvolvedor</th>
-                        <th style={{ width: "40%" }}>Custo por hora (R$)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.map((dev) => (
-                        <tr key={dev.id}>
-                          <td>{dev.name}</td>
-                          <td>
-                            <input
-                              type="number"
-                              inputMode="decimal"
-                              step="0.01"
-                              min="0"
-                              className="form-control"
-                              value={dev.hourlyCost}
-                              onChange={(e) => handleChange(dev.id, e.target.value)}
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
               </div>
 
               <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary"
-                  onClick={onClose}
-                  disabled={saving}
-                >
+                <button type="button" className="btn btn-outline-secondary" onClick={onClose} disabled={saving}>
                   Cancelar
                 </button>
-                <button type="submit" className="btn btn-primary" disabled={saving}>
-                  {saving ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Salvando...
-                    </>
-                  ) : (
-                    "Salvar"
-                  )}
+                <button type="submit" className="btn btn-primary" disabled={saving || loading}>
+                  {saving ? "Salvando..." : "Salvar"}
                 </button>
               </div>
             </form>
