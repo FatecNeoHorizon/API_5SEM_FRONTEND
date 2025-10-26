@@ -6,6 +6,9 @@ const api = axios.create({
   baseURL: API_BASE,
 });
 
+// --------------------------
+// Total de custos
+// --------------------------
 const EX_IDS = new Set([1]);
 const EX_NAMES = new Set(["Não atribuido", "Nao atribuido", "Não Atribuido", "Nao Atribuido"]);
 const excluiNaoAtribuido = (arr) =>
@@ -28,6 +31,9 @@ export async function getTotalCusto() {
   }
 }
 
+// --------------------------
+// Custos por projeto
+// --------------------------
 export async function getCustoPorProjeto() {
   try {
     const res = await api.get("/total-por-projeto");
@@ -37,6 +43,9 @@ export async function getCustoPorProjeto() {
   }
 }
 
+// --------------------------
+// Custos por desenvolvedor
+// --------------------------
 export async function getCustoPorDev() {
   try {
     const res = await api.get("/por-dev");
@@ -46,6 +55,9 @@ export async function getCustoPorDev() {
   }
 }
 
+// --------------------------
+// Evolução dos custos (por período)
+// --------------------------
 export async function getEvolucaoCustos(granularidade = "mes") {
   try {
     const res = await api.get("/evolucao", { params: { granularidade } });
