@@ -74,7 +74,8 @@ export const getHorasPorDev = async () => {
 // --------------------------
 export const getHorasPorPeriodo = async (periodo = "mes") => {
   try {
-    const { data } = await axios.get(API_BASE);
+    let { data } = await axios.get(API_BASE);
+    data = data.filter(d => removerPeriodoCoringa(d.dimPeriodo));
     let dadosFiltrados = [...data];
 
     const getUltimoMesAno = () => {
@@ -230,4 +231,9 @@ export const getBugsXManutencaoPorPeriodo = async (periodo = "mes") => {
   };
 
   return mockData[periodo] || mockData["mes"];
+};
+
+const removerPeriodoCoringa = (dimPeriodo) =>
+{
+  return (dimPeriodo.ano != 99) && (dimPeriodo.dia != 31) && (dimPeriodo.mes != 12) && (dimPeriodo.semana != 99);
 };
