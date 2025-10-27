@@ -9,6 +9,19 @@ const api = axios.create({
 // --------------------------
 // Total de custos
 // --------------------------
+const EX_IDS = new Set([1]);
+const EX_NAMES = new Set(["Não atribuido", "Nao atribuido", "Não Atribuido", "Nao Atribuido"]);
+const excluiNaoAtribuido = (arr) =>
+  Array.isArray(arr)
+    ? arr.filter((r) => {
+        const id = Number(r?.id ?? r?.devId ?? r?.dimDev?.id ?? r?.desenvolvedorId);
+        const nome = String(r?.nome ?? r?.devNome ?? r?.desenvolvedorNome ?? "").trim();
+        if (EX_IDS.has(id)) return false;
+        if (EX_NAMES.has(nome)) return false;
+        return true;
+      })
+    : arr;
+
 export async function getTotalCusto() {
   try {
     const res = await api.get("/total");
@@ -36,7 +49,7 @@ export async function getCustoPorProjeto() {
 export async function getCustoPorDev() {
   try {
     const res = await api.get("/por-dev");
-    return res.data;
+    return excluiNaoAtribuido(res.data);
   } catch (err) {
     throw new Error("Falha ao buscar custo por dev");
   }
