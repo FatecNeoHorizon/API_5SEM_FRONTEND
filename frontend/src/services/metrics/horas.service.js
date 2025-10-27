@@ -209,7 +209,24 @@ export const getTotalBugs = async () => {
 // Total de Manutencao (mock)
 // --------------------------
 export const getTotalManutencao = async () => {
-  return { total: 45 };
+  try {
+    const base = process.env.REACT_APP_API_URL;
+    if (!base) {
+      console.error("REACT_APP_API_URL não está definido no .env");
+      return { total: 0, items: [] };
+    }
+
+    let { data } = await axios.get(APONTAMENTO_HORAS_BASE);
+    data = data.filter(d => puxarApenasTipoErro(d.dimTipo));
+     // data = data.filter(d => removerPeriodoCoringa(d.dimPeriodo));
+    let dadosFiltrados = [...data];
+    const totalHoras = dadosFiltrados.reduce((acc, cur) => acc + cur.horasTrabalhadas, 0);
+    
+    return { total: totalHoras};
+  } catch (error) {
+    console.error("Falha ao buscar tipos 'Erro' em /dim-tipo/nome/Erro:", error);
+    return { total: 0};
+  }
 };
 
 // --------------------------
