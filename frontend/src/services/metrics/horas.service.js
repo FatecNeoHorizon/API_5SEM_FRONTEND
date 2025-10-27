@@ -181,10 +181,24 @@ export const getHorasPorPeriodo = async (periodo = "mes") => {
 };
 
 // --------------------------
-// Total de Bugs (mock)
+// Total de Bugs
 // --------------------------
 export const getTotalBugs = async () => {
-  return { total: 123 };
+  try {
+    const base = process.env.REACT_APP_API_URL;
+    if (!base) {
+      console.error("REACT_APP_API_URL não está definido no .env");
+      return { total: 0, items: [] };
+    }
+    const url = `${base.replace(/\/$/, "")}/dim-tipo/nome/Erro`;
+    const res = await axios.get(url);
+    const data = Array.isArray(res.data) ? res.data : [];
+    
+    return { total: data.length, items: data };
+  } catch (error) {
+    console.error("Falha ao buscar tipos 'Erro' em /dim-tipo/nome/Erro:", error);
+    return { total: 0, items: [] };
+  }
 };
 
 // --------------------------
