@@ -14,18 +14,38 @@ import {
   Area,
 } from "recharts";
 
+import {
+  getTotalCusto,
+  getCustoPorProjeto,
+  getCustoPorDev,
+  getEvolucaoCustos,
+} from "../../services/metrics/custos.service";
+
 const currency = (v) =>
   v?.toLocaleString?.("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }) ?? v;
 
-export default function CostsChart() {
+const EX_IDS = new Set([1]);
+const EX_NAMES = new Set(["Não atribuido", "Nao atribuido", "Não Atribuido", "Nao Atribuido"]);
+const excluiNaoAtribuido = (arr) =>
+  Array.isArray(arr)
+    ? arr.filter((r) => {
+        const id = Number(r?.id ?? r?.devId ?? r?.dimDev?.id ?? r?.desenvolvedorId);
+        const nome = String(r?.nome ?? r?.devNome ?? r?.desenvolvedorNome ?? "").trim();
+        if (EX_IDS.has(id)) return false;
+        if (EX_NAMES.has(nome)) return false;
+        return true;
+      })
+    : arr;
+
+export default function CustosChart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [totalCusto, setTotalCusto] = useState(0);
   const [porProjeto, setPorProjeto] = useState([]);
   const [porDev, setPorDev] = useState([]);
-
   const [evolucao, setEvolucao] = useState([]);
+
   const [gran, setGran] = useState("mes");
   const [loadingEvolution, setLoadingEvolution] = useState(false);
 
@@ -33,16 +53,14 @@ export default function CostsChart() {
     try {
       setLoading(true);
       setError(null);
-      const [tRes, pRes, dRes] = await Promise.all([
-        fetch("http://localhost:8080/fato-custo-hora/total"),
-        fetch("http://localhost:8080/fato-custo-hora/total-por-projeto"),
-        fetch("http://localhost:8080/fato-custo-hora/por-dev"),
+      const [tJson, pJson, dJson] = await Promise.all([
+        getTotalCusto(),
+        getCustoPorProjeto(),
+        getCustoPorDev(),
       ]);
-      if (![tRes, pRes, dRes].every((r) => r.ok)) throw new Error("Falha ao buscar total/projeto/dev");
-      const [tJson, pJson, dJson] = await Promise.all([tRes.json(), pRes.json(), dRes.json()]);
       setTotalCusto(tJson?.total ?? 0);
       setPorProjeto(pJson ?? []);
-      setPorDev(dJson ?? []);
+      setPorDev(excluiNaoAtribuido(dJson ?? []));
     } catch (e) {
       setError("Erro ao buscar dados consolidados. Verifique a API.");
     } finally {
@@ -53,9 +71,7 @@ export default function CostsChart() {
   const fetchEvolution = async (g = gran) => {
     try {
       setLoadingEvolution(true);
-      const eRes = await fetch(`http://localhost:8080/fato-custo-hora/evolucao?granularidade=${g}`);
-      if (!eRes.ok) throw new Error("Falha ao buscar evolução");
-      const eJson = await eRes.json();
+      const eJson = await getEvolucaoCustos(g);
       setEvolucao(eJson ?? []);
     } catch (e) {
       setError("Erro ao buscar evolução de custos. Verifique a API.");
@@ -70,7 +86,7 @@ export default function CostsChart() {
       await fetchEvolution(gran);
     };
     init();
-  }, []); // mounts once; evolution changes via buttons without reloading others
+  }, []);
 
   const devsUnicos = useMemo(() => porDev.length || 0, [porDev]);
   const totalHoras = useMemo(
@@ -122,20 +138,8 @@ export default function CostsChart() {
 
   return (
     <div className="container-fluid p-3">
-      <div>
-        <button
-          className="btn btn-secondary px-sm-3 fs-4"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapse_cost_container"
-          aria-expanded="false"
-          aria-controls="collapse_cost_container"
-        >
-          Custos
-        </button>
-      </div>
-      <hr />
 
+      {/* Custo Total */}
       <div className="collapse show" id="collapse_cost_container">
         <div className="row g-3 align-items-stretch mb-3">
           <div className="col-md-4">
@@ -146,6 +150,8 @@ export default function CostsChart() {
               </div>
             </div>
           </div>
+
+          {/* Nº de Desenvolvedores */}
           <div className="col-md-4">
             <div className="card h-100 text-center shadow-sm">
               <div className="card-body d-flex flex-column justify-content-center">
@@ -154,6 +160,8 @@ export default function CostsChart() {
               </div>
             </div>
           </div>
+
+          {/* Média - Custo/Hora */}
           <div className="col-md-4">
             <div className="card h-100 text-center shadow-sm">
               <div className="card-body d-flex flex-column justify-content-center">
@@ -166,6 +174,7 @@ export default function CostsChart() {
           </div>
         </div>
 
+        {/* Evolução do Custo ao Longo do Tempo */}
         <div className="row g-3 mb-3">
           <div className="col-md-8">
             <div className="card h-100">
@@ -226,6 +235,7 @@ export default function CostsChart() {
             </div>
           </div>
 
+        {/* Custo por Projeto */}
           <div className="col-md-4">
             <div className="card h-100">
               <div className="card-header">
@@ -258,6 +268,7 @@ export default function CostsChart() {
           </div>
         </div>
 
+        {/* Horas vs Custo por Desenvolvedor */}
         <div className="row g-3">
           <div className="col-md-6">
             <div className="card h-100">
@@ -302,6 +313,7 @@ export default function CostsChart() {
             </div>
           </div>
 
+        {/* Custo Total por Desenvolvedor */}
           <div className="col-md-6">
             <div className="card h-100">
               <div className="card-header">

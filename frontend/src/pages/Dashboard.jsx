@@ -1,49 +1,40 @@
 import React from "react";
 import Layout from "../components/Layout/Layout";
-import HorasDevChart from "../components/Charts/HorasDevChart";
-import HorasPorPeriodo from "../components/Charts/horasPorPeriodo";
-import HoraProjetoChart from "../components/Charts/HorasProjetoChart";
-import IssuesTotalChart from "../components/Charts/IssuesTotalChart";
-import CostsChart from "../components/Charts/CostsChart";
-import IssuesProjetoChart from "../components/Charts/IssuesProjetoChart";
-import IssuesPeriodoChart from "../components/Charts/IssuesPeriodoChart";
-import DevHoursByActivityDayChart from "../components/Charts/DevHoursByActivityDayChart";
+import HorasChart from "../components/Charts/HorasChart";
+import AtividadesChart from "../components/Charts/AtividadesChart";
+import CustosChart from "../components/Charts/CustosChart";
 
 const Dashboard = () => {
   return (
     <Layout>
 
+      <div className="container-fluid py-4">
         <div className="container-fluid p-3">
           <div>
             <button
               className="btn btn-secondary px-sm-3 fs-4"
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target="#collapse_issues_container"
+              data-bs-target="#collapse_atividades_container"
               aria-expanded="false"
-              aria-controls="collapse_issues_container"
+              aria-controls="collapse_atividades_container"
             >
-              Issues
+              Atividades
             </button>
           </div>
           <hr />
-          <div className="collapse show" id="collapse_issues_container">
-            <div className="row g-4">
-              <div className="full-width">
-                <IssuesTotalChart />
-              </div>
-              <div className="col-2">
-                <IssuesProjetoChart />
-              </div>
-              <div className="col-10">
-                <IssuesPeriodoChart />
-              </div>
-              <div>
-                <DevHoursByActivityDayChart/>
+
+          <div className="collapse show" id="collapse_atividades_container">
+            <div className="row g-3">
+              <div className="">
+                <div className="container-fluid py-4">
+                  <AtividadesChart />
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
       
       <div className="container-fluid py-4">
         <div className="container-fluid p-3">
@@ -64,20 +55,10 @@ const Dashboard = () => {
           <div className="collapse show" id="collapse_horas_container">
             <div className="row g-3">
 
-              <div className="col-md-6">
+              <div className="">
                 <div className="container-fluid py-4">
-                  <HoraProjetoChart />
+                  <HorasChart />
                 </div>
-              </div>
-
-              <div className="col-md-6">
-                <div className="container-fluid py-4">
-                  <HorasDevChart />
-                </div>
-              </div>
-
-              <div className="container-fluid py-4">
-                <HorasPorPeriodo />
               </div>
             </div>
           </div>
@@ -85,7 +66,31 @@ const Dashboard = () => {
       </div>
 
       <div className="container-fluid py-4">
-        <CostsChart />
+        <div className="container-fluid p-3">
+          <div>
+            <button
+              className="btn btn-secondary px-sm-3 fs-4"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapse_custos_container"
+              aria-expanded="false"
+              aria-controls="collapse_custos_container"
+            >
+              Custos
+            </button>
+          </div>
+          <hr />
+
+          <div className="collapse show" id="collapse_custos_container">
+            <div className="row g-3">
+              <div className="">
+                <div className="container-fluid py-4">
+                  <CustosChart />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </Layout>
   );
