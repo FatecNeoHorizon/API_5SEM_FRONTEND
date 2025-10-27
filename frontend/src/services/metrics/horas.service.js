@@ -3,6 +3,7 @@ import { DimProjeto } from "../DimProjeto";
 import { DimDev } from "../DimDev";
 
 const API_BASE = `${process.env.REACT_APP_API_URL}/fato-custo-hora`;
+const APONTAMENTO_HORAS_BASE = `${process.env.REACT_APP_API_URL}/fato-apontamento-horas`;
 
 // --------------------------
 // Horas por projeto
@@ -191,11 +192,13 @@ export const getTotalBugs = async () => {
       console.error("REACT_APP_API_URL não está definido no .env");
       return { total: 0, items: [] };
     }
-    const url = `${base.replace(/\/$/, "")}/dim-tipo/nome/Erro`;
-    const res = await axios.get(url);
-    const data = Array.isArray(res.data) ? res.data : [];
+
+    let { data } = await axios.get(APONTAMENTO_HORAS_BASE);
+    data = data.filter(d => puxarApenasTipoErro(d.dimTipo));
+     // data = data.filter(d => removerPeriodoCoringa(d.dimPeriodo));
+    let dadosFiltrados = [...data];
     
-    return { total: data.length, items: data };
+    return { total: dadosFiltrados.length, items: dadosFiltrados };
   } catch (error) {
     console.error("Falha ao buscar tipos 'Erro' em /dim-tipo/nome/Erro:", error);
     return { total: 0, items: [] };
@@ -251,3 +254,10 @@ const removerPeriodoCoringa = (dimPeriodo) =>
 {
   return (dimPeriodo.ano != 99) && (dimPeriodo.dia != 31) && (dimPeriodo.mes != 12) && (dimPeriodo.semana != 99);
 };
+
+const puxarApenasTipoErro = (dimTipo) =>
+{
+  const erro_id = 3;
+  return (dimTipo.id ===  erro_id);
+};
+
