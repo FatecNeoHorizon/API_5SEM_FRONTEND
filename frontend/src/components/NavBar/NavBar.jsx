@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logoWhite from '../../assets/logoWhite.png';
 import userWhite from '../../assets/userWhite.png';
 import ModalCustoDev from "../Modal/ModalCustoDev.jsx"; // <— novo modal
 
 const NavBar = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);                // dropdown principal
   const [openSettings, setOpenSettings] = useState(false); // submenu Configurações
   const [showCustoModal, setShowCustoModal] = useState(false); // modal custo
@@ -91,7 +93,10 @@ const NavBar = () => {
                 style={{ cursor: "pointer" }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f1f1f1")}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-                onClick={() => {/* coloque aqui a lógica de sair */}}
+                onClick={() => {
+                  setOpen(false);
+                  navigate("/");
+                }}
               >
                 🚪 Sair
               </li>
