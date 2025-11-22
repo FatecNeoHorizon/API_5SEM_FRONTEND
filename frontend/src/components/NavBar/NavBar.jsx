@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import logoWhite from '../../assets/logoWhite.png';
 import userWhite from '../../assets/userWhite.png';
-import ModalCustoDev from "../Modal/ModalCustoDev.jsx"; // <— novo modal
+import ModalCustoDev from "../Modal/ModalCustoDev.jsx";
+import Hint from "../Hint/Hint";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);                // dropdown principal
@@ -70,7 +71,7 @@ const NavBar = () => {
                 <li className="pb-2">
                   <ul className="list-unstyled m-0 ps-3">
                     <li
-                      className="p-2 text-dark"
+                      className="p-2 text-dark d-flex align-items-center gap-2"
                       style={{ cursor: "pointer" }}
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f7f7f7")}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
@@ -80,7 +81,12 @@ const NavBar = () => {
                         setOpenSettings(false);
                       }}
                     >
-                      • Custo por hora dos devs
+                      <span>• Custo por hora dos devs</span>
+                      <Hint 
+                        text="Configure o valor do custo por hora de cada desenvolvedor. Este valor é utilizado para calcular os custos totais do projeto."
+                        position="right"
+                        size="sm"
+                      />
                     </li>
                   </ul>
                 </li>

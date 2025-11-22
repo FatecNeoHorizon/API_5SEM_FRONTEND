@@ -21,6 +21,7 @@ import {
 } from "../../services/metrics/horas.service";
 import ProjetoTooltip from "./ProjetoTooltip";
 import DevTooltip from "./DevTooltip";
+import Hint from "../Hint/Hint";
 
 export default function HorasChart() {
     const [projetoData, setProjetoData] = useState([]);
@@ -118,9 +119,16 @@ export default function HorasChart() {
                 <div className="col-12 col-md-6">
                     <div className="card text-center shadow-sm">
                         <div className="card-body d-flex flex-column justify-content-center align-items-center">
-                            <h5 className="card-subtitle text-muted mb-1 fs-7 fw-semibold">
-                                📋 Total de Bugs
-                            </h5>
+                            <div className="d-flex align-items-center gap-1 justify-content-center mb-1">
+                                <h5 className="card-subtitle text-muted mb-0 fs-7 fw-semibold">
+                                    📋 Total de Bugs
+                                </h5>
+                                <Hint 
+                                    text="Quantidade total de bugs registrados no sistema. Bugs são erros ou problemas identificados durante o desenvolvimento ou testes."
+                                    position="bottom"
+                                    size="sm"
+                                />
+                            </div>
                             <div className="display-6 text-primary fw-bold">{totalBugs}</div>
                         </div>
                     </div>
@@ -130,9 +138,16 @@ export default function HorasChart() {
                 <div className="col-12 col-md-6">
                     <div className="card text-center shadow-sm">
                         <div className="card-body d-flex flex-column justify-content-center align-items-center">
-                            <h5 className="card-subtitle text-muted mb-1 fs-7 fw-semibold">
-                                📋 Total de Manutenção em Horas
-                            </h5>
+                            <div className="d-flex align-items-center gap-1 justify-content-center mb-1">
+                                <h5 className="card-subtitle text-muted mb-0 fs-7 fw-semibold">
+                                    📋 Total de Manutenção em Horas
+                                </h5>
+                                <Hint 
+                                    text="Total de horas dedicadas à manutenção do sistema, incluindo correções de bugs e melhorias no código existente."
+                                    position="bottom"
+                                    size="sm"
+                                />
+                            </div>
                             <div className="display-6 text-primary fw-bold">{totalManutencao}</div>
                         </div>
                     </div>
@@ -142,9 +157,16 @@ export default function HorasChart() {
                 <div className="col-12">
                     <div className="card">
                         <div className="card-header d-flex justify-content-between align-items-center">
-                            <h6 className="mb-0 fs-5 fw-semibold">
-                                📈 Bugs x Manutenção por Período
-                            </h6>
+                            <div className="d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-5 fw-semibold">
+                                    📈 Bugs x Manutenção por Período
+                                </h6>
+                                <Hint 
+                                    text="Análise comparativa entre quantidade de bugs encontrados e horas de manutenção ao longo do tempo. Permite identificar correlações e períodos críticos."
+                                    position="bottom"
+                                    size="sm"
+                                />
+                            </div>
                             <fieldset className="btn-group btn-group-sm border-0 p-0">
                                 {opcoes.map(({ key, label }) => (
                                     <React.Fragment key={key}>
@@ -210,9 +232,16 @@ export default function HorasChart() {
                 <div className="col-12 col-md-6">
                     <div className="card h-100">
                         <div className="card-header">
-                            <h6 className="mb-0 fs-5 fw-semibold">
-                                📊 Horas trabalhadas por projeto
-                            </h6>
+                            <div className="d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-5 fw-semibold">
+                                    📊 Horas trabalhadas por projeto
+                                </h6>
+                                <Hint 
+                                    text="Distribuição das horas trabalhadas entre os diferentes projetos. Mostra onde o tempo da equipe está sendo investido."
+                                    position="bottom"
+                                    size="sm"
+                                />
+                            </div>
                         </div>
                         <div className="card-body">
                             <ResponsiveContainer width="100%" height={250}>
@@ -244,9 +273,16 @@ export default function HorasChart() {
                 <div className="col-12 col-md-6">
                     <div className="card h-100">
                         <div className="card-header">
-                            <h6 className="mb-0 fs-5 fw-semibold">
-                                👨‍💻 Horas por Desenvolvedor
-                            </h6>
+                            <div className="d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-5 fw-semibold">
+                                    👨‍💻 Horas por Desenvolvedor
+                                </h6>
+                                <Hint 
+                                    text="Total de horas trabalhadas por cada desenvolvedor da equipe. Útil para análise de carga de trabalho e distribuição de tarefas."
+                                    position="bottom"
+                                    size="sm"
+                                />
+                            </div>
                         </div>
                         <div className="card-body">
                             <ResponsiveContainer width="100%" height={250}>
@@ -278,9 +314,16 @@ export default function HorasChart() {
                 <div className="col-12">
                     <div className="card">
                         <div className="card-header d-flex justify-content-between align-items-center">
-                            <h6 className="mb-0 fs-5 fw-semibold">
-                                ⏱️ Horas Realizadas por Período
-                            </h6>
+                            <div className="d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-5 fw-semibold">
+                                    ⏱️ Horas Realizadas por Período
+                                </h6>
+                                <Hint 
+                                    text="Evolução temporal das horas trabalhadas. Use os filtros de período para analisar tendências diárias, semanais, mensais ou anuais."
+                                    position="bottom"
+                                    size="sm"
+                                />
+                            </div>
                             <fieldset className="btn-group btn-group-sm border-0 p-0">
                                 {opcoes.map(({ key, label }) => (
                                     <React.Fragment key={key}>
