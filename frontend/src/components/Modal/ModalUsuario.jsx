@@ -9,6 +9,9 @@ export default function ModalUsuario({ show, onClose }) {
   const [form, setForm] = useState({ email: "", senha: "", cargo: "DEVELOPER" });
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
+  const [cargoLocked, setCargoLocked] = useState(false);
 
   useEffect(() => {
     if (!show) return;
@@ -21,14 +24,37 @@ export default function ModalUsuario({ show, onClose }) {
   }, [show]);
 
   function openEdit(usuario) {
-    setEditId(usuario.id);
+    setEditId(usuario.usuario_id ?? usuario.id);
+    // Não trazemos a senha do backend por segurança. Oferecemos opção de alterar.
     setForm({ email: usuario.email, senha: "", cargo: usuario.cargo });
+    // se o usuário sendo editado for ETL ou ADMIN, bloqueia alteração do cargo
+    const isLocked = String(usuario.cargo).toUpperCase() === "ETL" || String(usuario.cargo).toUpperCase() === "ADMIN";
+    setCargoLocked(isLocked);
+    setChangePassword(false);
+    setShowPassword(false);
     setShowForm(true);
+  }
+
+  async function handleDelete(id) {
+    if (!window.confirm("Tem certeza que deseja excluir este usuário?")) return;
+    setSaving(true);
+    try {
+      await deleteUsuario(id);
+      setUsuarios(await listUsuarios());
+      setAlert({ type: "success", msg: "Usuário excluído!" });
+    } catch {
+      setAlert({ type: "danger", msg: "Falha ao excluir usuário." });
+    } finally {
+      setSaving(false);
+    }
   }
 
   function openCreate() {
     setEditId(null);
     setForm({ email: "", senha: "", cargo: "DEVELOPER" });
+    setCargoLocked(false);
+    setChangePassword(true); // criação exige senha
+    setShowPassword(false);
     setShowForm(true);
   }
 
@@ -36,6 +62,9 @@ export default function ModalUsuario({ show, onClose }) {
     setShowForm(false);
     setForm({ email: "", senha: "", cargo: "DEVELOPER" });
     setEditId(null);
+    setChangePassword(false);
+    setShowPassword(false);
+    setCargoLocked(false);
   }
 
   function handleChange(e) {
@@ -59,11 +88,25 @@ export default function ModalUsuario({ show, onClose }) {
       return;
     }
 
+    // validação de senha: criação sempre precisa; edição apenas se changePassword=true
+    if (!editId && !form.senha) {
+      setAlert({ type: "danger", msg: "Senha obrigatória ao criar usuário." });
+      return;
+    }
+
+    if (editId && changePassword && !form.senha) {
+      setAlert({ type: "danger", msg: "Informe a nova senha ou desmarque 'Alterar senha'." });
+      return;
+    }
+
     setSaving(true);
 
     try {
       if (editId) {
-        await updateUsuario({ id: editId, ...form });
+        // Preservar senha atual se o usuário não optou por alterá-la
+        const payload = { id: editId, email: form.email, cargo: form.cargo };
+        if (changePassword) payload.senha = form.senha;
+        await updateUsuario(payload);
         setAlert({ type: "success", msg: "Usuário atualizado!" });
       } else {
         await createUsuario(form);
@@ -77,20 +120,7 @@ export default function ModalUsuario({ show, onClose }) {
     } finally {
       setSaving(false);
     }
-  }
 
-  async function handleDelete(id) {
-    if (!window.confirm("Tem certeza que deseja excluir este usuário?")) return;
-    setSaving(true);
-    try {
-      await deleteUsuario(id);
-      setUsuarios(await listUsuarios());
-      setAlert({ type: "success", msg: "Usuário excluído!" });
-    } catch {
-      setAlert({ type: "danger", msg: "Falha ao excluir usuário." });
-    } finally {
-      setSaving(false);
-    }
   }
 
   const modalClass = `modal fade ${show ? "show d-block" : ""}`;
@@ -125,16 +155,17 @@ export default function ModalUsuario({ show, onClose }) {
                         <th style={{ width: 100 }}>Ações</th>
                       </tr>
                     </thead>
+                    
                     <tbody>
                       {usuarios.map((u) => (
-                        <tr key={u.id}>
+                        <tr key={u.usuario_id ?? u.id}>
                           <td>{u.email}</td>
                           <td>{u.cargo}</td>
                           <td>
                             <button className="btn btn-sm btn-primary me-2" title="Editar" onClick={() => openEdit(u)}>
                               <span className="bi bi-pencil">✏️</span>
                             </button>
-                            <button className="btn btn-sm btn-danger" title="Excluir" onClick={() => handleDelete(u.id)}>
+                            <button className="btn btn-sm btn-danger" title="Excluir" onClick={() => handleDelete(u.usuario_id ?? u.id)}>
                               <span className="bi bi-trash">🗑️</span>
                             </button>
                           </td>
@@ -172,15 +203,84 @@ export default function ModalUsuario({ show, onClose }) {
 
                         <div className="mb-3">
                           <label className="form-label">Cargo</label>
-                          <select className="form-select" name="cargo" value={form.cargo} onChange={handleChange} required>
-                            <option value="DEVELOPER">DEVELOPER</option>
-                            <option value="MANAGER">MANAGER</option>
-                          </select>
+                          {cargoLocked ? (
+                            <input type="text" className="form-control" value={form.cargo} readOnly />
+                          ) : (
+                            <select className="form-select" name="cargo" value={form.cargo} onChange={handleChange} required>
+                              <option value="DEVELOPER">DEVELOPER</option>
+                              <option value="MANAGER">MANAGER</option>
+                            </select>
+                          )}
                         </div>
 
                         <div className="mb-3">
                           <label className="form-label">Senha</label>
-                          <input type="password" className="form-control" name="senha" value={form.senha} onChange={handleChange} required />
+                          {editId ? (
+                            <div className="form-check mb-2">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id="changePassword"
+                                checked={changePassword}
+                                onChange={() => setChangePassword((c) => !c)}
+                              />
+                              <label className="form-check-label" htmlFor="changePassword">
+                                Alterar senha
+                              </label>
+                            </div>
+                          ) : null}
+
+                          {(!editId || changePassword) && (
+                            <div className="input-group">
+                              <input
+                                type={showPassword ? "text" : "password"}
+                                className="form-control"
+                                name="senha"
+                                value={form.senha}
+                                onChange={handleChange}
+                                required={!editId}
+                              />
+                              <button
+                                type="button"
+                                className="btn btn-outline-secondary password-toggle-btn"
+                                onClick={() => setShowPassword((s) => !s)}
+                                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                                title={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                              >
+                                {showPassword ? (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                  </svg>
+                                ) : (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                  </svg>
+                                )}
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
 

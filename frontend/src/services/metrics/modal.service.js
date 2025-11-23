@@ -29,37 +29,36 @@ export async function updateFato(fato) {
 }
 
 // --------------------------
-// Modal Gerenciar Usuarios
+// Modal Gerenciar Usuarios (integração com backend)
 // --------------------------
 
-// MOCK: Lista de usuários
-let mockUsuarios = [
-  { id: 1, email: "admin@neohorizon.com", cargo: "ADMIN" },
-  { id: 2, email: "dev1@neohorizon.com", cargo: "DEVELOPER" },
-  { id: 3, email: "dev2@neohorizon.com", cargo: "DEVELOPER" },
-];
+const userApi = axios.create({ baseURL: `${API_BASE}/usuario` });
+
+function authHeader() {
+  const token = localStorage.getItem("token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 export async function listUsuarios() {
-  // Simula delay
-  await new Promise((r) => setTimeout(r, 300));
-  return mockUsuarios;
+  const res = await userApi.get("", { headers: authHeader() });
+  return res.data;
 }
 
 export async function createUsuario(usuario) {
-  await new Promise((r) => setTimeout(r, 300));
-  const novo = { ...usuario, id: Date.now() };
-  mockUsuarios.push(novo);
-  return novo;
+  const res = await userApi.post("", usuario, { headers: authHeader() });
+  return res.data;
 }
 
 export async function updateUsuario(usuario) {
-  await new Promise((r) => setTimeout(r, 300));
-  mockUsuarios = mockUsuarios.map((u) => (u.id === usuario.id ? { ...u, ...usuario } : u));
-  return usuario;
+  // usuario should contain either usuario_id or id
+  const id = usuario.usuario_id ?? usuario.id;
+  if (!id) throw new Error("ID do usuário é necessário para atualização");
+  const body = { email: usuario.email, senha: usuario.senha, cargo: usuario.cargo };
+  const res = await userApi.put(`/${id}`, body, { headers: authHeader() });
+  return res.data;
 }
 
 export async function deleteUsuario(id) {
-  await new Promise((r) => setTimeout(r, 300));
-  mockUsuarios = mockUsuarios.filter((u) => u.id !== id);
-  return true;
+  const res = await userApi.delete(`/${id}`, { headers: authHeader() });
+  return res.status === 204 || res.status === 200;
 }

@@ -124,7 +124,12 @@ const NavBar = () => {
                         setOpenSettings(false);
                       }}
                     >
-                      • Gerenciamento de Usuários
+                      <span>• Gerenciamento de Usuários</span>
+                      <Hint
+                        text="Aqui você poderá cadastrar novos usuários, editar permissões ou informações e excluir usuários existentes."
+                        position="left"
+                        size="sm"
+                      />
                     </li>
 
                     <li
@@ -141,7 +146,7 @@ const NavBar = () => {
                       <span>• Custo por hora dos devs</span>
                       <Hint
                         text="Configure o valor do custo por hora de cada desenvolvedor."
-                        position="right"
+                        position="left"
                         size="sm"
                       />
                     </li>
