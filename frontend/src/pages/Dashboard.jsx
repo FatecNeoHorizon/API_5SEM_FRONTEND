@@ -3,6 +3,7 @@ import Layout from "../components/Layout/Layout";
 import HorasChart from "../components/Charts/HorasChart";
 import AtividadesChart from "../components/Charts/AtividadesChart";
 import CustosChart from "../components/Charts/CustosChart";
+import Hint from "../components/Hint/Hint";
 
 const Dashboard = () => {
   return (
@@ -10,7 +11,7 @@ const Dashboard = () => {
 
       <div className="container-fluid py-4">
         <div className="container-fluid p-3">
-          <div>
+          <div className="d-flex align-items-center gap-2">
             <button
               className="btn btn-secondary px-sm-3 fs-4"
               type="button"
@@ -21,6 +22,11 @@ const Dashboard = () => {
             >
               Atividades
             </button>
+            <Hint 
+              text="Esta seção mostra métricas sobre as atividades desenvolvidas no projeto, incluindo total de atividades, distribuição por projeto, evolução temporal e horas por desenvolvedor." 
+              position="right"
+              size="md"
+            />
           </div>
           <hr />
 
@@ -38,7 +44,7 @@ const Dashboard = () => {
       
       <div className="container-fluid py-4">
         <div className="container-fluid p-3">
-          <div>
+          <div className="d-flex align-items-center gap-2">
             <button
               className="btn btn-secondary px-sm-3 fs-4"
               type="button"
@@ -49,6 +55,11 @@ const Dashboard = () => {
             >
               Horas
             </button>
+            <Hint 
+              text="Esta seção apresenta análises das horas trabalhadas, incluindo distribuição por projeto, por desenvolvedor, bugs e manutenções realizadas ao longo do tempo." 
+              position="right"
+              size="md"
+            />
           </div>
           <hr />
 
@@ -67,7 +78,7 @@ const Dashboard = () => {
 
       <div className="container-fluid py-4">
         <div className="container-fluid p-3">
-          <div>
+          <div className="d-flex align-items-center gap-2">
             <button
               className="btn btn-secondary px-sm-3 fs-4"
               type="button"
@@ -78,6 +89,11 @@ const Dashboard = () => {
             >
               Custos
             </button>
+            <Hint 
+              text="Esta seção exibe informações financeiras do projeto, incluindo custo total, média de custo por hora, distribuição de custos por projeto e desenvolvedor, além da evolução temporal dos gastos." 
+              position="right"
+              size="md"
+            />
           </div>
           <hr />
 

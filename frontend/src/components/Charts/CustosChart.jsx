@@ -13,6 +13,7 @@ import {
   AreaChart,
   Area,
 } from "recharts";
+import Hint from "../Hint/Hint";
 
 import {
   getTotalCusto,
@@ -145,7 +146,14 @@ export default function CustosChart() {
           <div className="col-md-4">
             <div className="card h-100 text-center shadow-sm">
               <div className="card-body d-flex flex-column justify-content-center">
-                <h5 className="card-subtitle text-muted mb-1 fs-6 fw-semibold">Custo Total</h5>
+                <div className="d-flex align-items-center gap-1 justify-content-center mb-1">
+                  <h5 className="card-subtitle text-muted mb-0 fs-6 fw-semibold">Custo Total</h5>
+                  <Hint 
+                    text="Soma total dos custos do projeto, incluindo todas as horas trabalhadas por todos os desenvolvedores multiplicadas por seus respectivos custos hora."
+                    position="bottom"
+                    size="sm"
+                  />
+                </div>
                 <div className="display-6 text-success fw-semibold">{currency(totalCusto)}</div>
               </div>
             </div>
@@ -155,7 +163,14 @@ export default function CustosChart() {
           <div className="col-md-4">
             <div className="card h-100 text-center shadow-sm">
               <div className="card-body d-flex flex-column justify-content-center">
-                <h5 className="card-subtitle text-muted mb-1 fs-6 fw-semibold">Nº de Desenvolvedores</h5>
+                <div className="d-flex align-items-center gap-1 justify-content-center mb-1">
+                  <h5 className="card-subtitle text-muted mb-0 fs-6 fw-semibold">Nº de Desenvolvedores</h5>
+                  <Hint 
+                    text="Quantidade de desenvolvedores únicos que tiveram custos registrados no sistema. Não inclui desenvolvedores não atribuídos."
+                    position="bottom"
+                    size="sm"
+                  />
+                </div>
                 <div className="display-6 text-secondary fw-semibold">{devsUnicos}</div>
               </div>
             </div>
@@ -165,7 +180,14 @@ export default function CustosChart() {
           <div className="col-md-4">
             <div className="card h-100 text-center shadow-sm">
               <div className="card-body d-flex flex-column justify-content-center">
-                <h5 className="card-subtitle text-muted mb-1 fs-6 fw-semibold">Média - Custo/Hora</h5>
+                <div className="d-flex align-items-center gap-1 justify-content-center mb-1">
+                  <h5 className="card-subtitle text-muted mb-0 fs-6 fw-semibold">Média - Custo/Hora</h5>
+                  <Hint 
+                    text="Custo médio por hora trabalhada, calculado dividindo o custo total pelo total de horas. Indica o preço médio da mão de obra."
+                    position="bottom"
+                    size="sm"
+                  />
+                </div>
                 <div className="display-6 text-secondary fw-semibold">
                   {totalHoras ? currency(mediaCustoHora) : "—"}
                 </div>
@@ -179,7 +201,14 @@ export default function CustosChart() {
           <div className="col-md-8">
             <div className="card h-100">
               <div className="card-header d-flex justify-content-between align-items-center">
-                <h6 className="mb-0 fs-5 fw-semibold">Evolução do Custo ao Longo do Tempo</h6>
+                <div className="d-flex align-items-center gap-2">
+                  <h6 className="mb-0 fs-5 fw-semibold">Evolução do Custo ao Longo do Tempo</h6>
+                  <Hint 
+                    text="Gráfico de área mostrando como os custos evoluíram ao longo do tempo. Use os filtros de granularidade para visualizar por dia, semana, mês ou ano."
+                    position="bottom"
+                    size="sm"
+                  />
+                </div>
                 <div className="btn-group btn-group-sm" role="group" aria-label="Período">
                   {[
                     { id: "dia", label: "Dia" },
@@ -239,7 +268,14 @@ export default function CustosChart() {
           <div className="col-md-4">
             <div className="card h-100">
               <div className="card-header">
-                <h6 className="mb-0 fs-5 fw-semibold">Custo por Projeto</h6>
+                <div className="d-flex align-items-center gap-2">
+                  <h6 className="mb-0 fs-5 fw-semibold">Custo por Projeto</h6>
+                  <Hint 
+                    text="Distribuição dos custos totais entre os projetos. Permite identificar quais projetos estão consumindo mais recursos financeiros."
+                    position="bottom"
+                    size="sm"
+                  />
+                </div>
               </div>
               <div className="card-body">
                 <ResponsiveContainer width="100%" height={280}>
@@ -273,7 +309,14 @@ export default function CustosChart() {
           <div className="col-md-6">
             <div className="card h-100">
               <div className="card-header">
-                <h6 className="mb-0 fs-5 fw-semibold">Horas vs Custo por Desenvolvedor</h6>
+                <div className="d-flex align-items-center gap-2">
+                  <h6 className="mb-0 fs-5 fw-semibold">Horas vs Custo por Desenvolvedor</h6>
+                  <Hint 
+                    text="Comparação entre horas trabalhadas e custos gerados por cada desenvolvedor. Permite visualizar a correlação entre tempo e investimento."
+                    position="bottom"
+                    size="sm"
+                  />
+                </div>
               </div>
               <div className="card-body">
                 <ResponsiveContainer width="100%" height={280}>
@@ -317,7 +360,14 @@ export default function CustosChart() {
           <div className="col-md-6">
             <div className="card h-100">
               <div className="card-header">
-                <h6 className="mb-0 fs-5 fw-semibold">Custo Total por Desenvolvedor</h6>
+                <div className="d-flex align-items-center gap-2">
+                  <h6 className="mb-0 fs-5 fw-semibold">Custo Total por Desenvolvedor</h6>
+                  <Hint 
+                    text="Custo total gerado por cada desenvolvedor, calculado multiplicando suas horas trabalhadas pelo custo/hora configurado."
+                    position="bottom"
+                    size="sm"
+                  />
+                </div>
               </div>
               <div className="card-body">
                 <ResponsiveContainer width="100%" height={280}>
