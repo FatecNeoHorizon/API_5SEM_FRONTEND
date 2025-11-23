@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./Hint.css";
+import "../../style/Hint.css";
 const Hint = ({ text, position = "top", size = "md" }) => {
   const [isVisible, setIsVisible] = React.useState(false);
 
