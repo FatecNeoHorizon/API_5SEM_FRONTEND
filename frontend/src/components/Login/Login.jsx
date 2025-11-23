@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../style/home.css";
+import "../../style/login.css";
 
-export default function Home() {
+import { login } from "../../services/metrics/login.service";
+
+export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -14,13 +16,26 @@ export default function Home() {
     setShowPassword(!showPassword);
   };
 
+  const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    if (!isEmailValid(email)) {
+      setError("E-mail inválido! Exemplo: usuario@dominio.com");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      console.log("Login attempt:", { email, senha });
+      // Chama o backend e decodifica com segurança
+      const payload = await login(email, senha);
+
+      console.log("Payload do JWT:", payload);
+
+      // Vai para dashboard
       navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Erro ao fazer login");
@@ -31,7 +46,7 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      {/* Lado Esquerdo - Formulário de Login (Fundo Branco) */}
+      {/* Lado Esquerdo */}
       <div className="home-left">
         <div className="login-box">
           <div className="login-header">
@@ -47,12 +62,12 @@ export default function Home() {
                 className="btn-close"
                 onClick={() => setError(null)}
                 aria-label="Fechar"
-              ></button>
+              />
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="login-form">
-            {/* Campo de E-mail */}
+            {/* Email */}
             <div className="form-group mb-3">
               <label htmlFor="email" className="form-label">
                 E-mail
@@ -69,11 +84,12 @@ export default function Home() {
               />
             </div>
 
-            {/* Campo de Senha com Toggle */}
+            {/* Senha */}
             <div className="form-group mb-3">
               <label htmlFor="senha" className="form-label">
                 Senha
               </label>
+
               <div className="password-input-group">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -85,6 +101,7 @@ export default function Home() {
                   required
                   disabled={loading}
                 />
+
                 <button
                   type="button"
                   className="password-toggle-btn"
@@ -92,6 +109,7 @@ export default function Home() {
                   title={showPassword ? "Ocultar senha" : "Mostrar senha"}
                   disabled={loading}
                 >
+                  {/* Ícones de olho */}
                   {showPassword ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -127,26 +145,22 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Botão Entrar */}
-            <button
-              type="submit"
-              className="btn btn-primary btn-login"
-              disabled={loading}
-            >
+            {/* Entrar */}
+            <button type="submit" className="btn btn-primary btn-login" disabled={loading}>
               {loading ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" aria-hidden="true" />
-                {" Entrando..."}
-              </>
-            ) : (
-              "Entrar"
-            )}
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" />
+                  Entrando...
+                </>
+              ) : (
+                "Entrar"
+              )}
             </button>
           </form>
         </div>
       </div>
 
-      {/* Lado Direito - Imagem/Tema */}
+      {/* Lado Direito */}
       <div className="home-right">
         <div className="right-content">
           <h2>Dashboard Inteligente</h2>
