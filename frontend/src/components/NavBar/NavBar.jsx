@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import logoWhite from '../../assets/logoWhite.png';
 import userWhite from '../../assets/userWhite.png';
-import ModalCustoDev from "../Modal/ModalCustoDev.jsx"; // <— novo modal
+
+import ModalCustoDev from "../Modal/ModalCustoDev.jsx";
+import ModalUsuario from "../Modal/ModalUsuario.jsx";
 
 const NavBar = () => {
-  const [open, setOpen] = useState(false);                // dropdown principal
-  const [openSettings, setOpenSettings] = useState(false); // submenu Configurações
-  const [showCustoModal, setShowCustoModal] = useState(false); // modal custo
+  const [open, setOpen] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
+  const [showCustoModal, setShowCustoModal] = useState(false);
+  const [showUsuarioModal, setShowUsuarioModal] = useState(false);
 
-  // fecha tudo ao clicar fora (opcional, simples)
   React.useEffect(() => {
     function handleClick(e) {
-      // se clicar fora do nav, fecha dropdown/submenu
       const nav = document.querySelector("nav.navbar-neohorizon");
       if (nav && !nav.contains(e.target)) {
         setOpen(false);
@@ -25,6 +26,7 @@ const NavBar = () => {
   return (
     <>
       <nav className="bg-dark d-flex flex-row justify-content-between position-relative navbar-neohorizon">
+        
         {/* Logo */}
         <div className="px-4 py-2 d-flex align-items-center justify-content-center">
           <img src={logoWhite} alt="Logo" width="65" className="d-inline-block align-text-top" />
@@ -54,6 +56,7 @@ const NavBar = () => {
             style={{ right: "1rem", top: "110%", minWidth: "240px", zIndex: 1050 }}
           >
             <ul className="list-unstyled m-0">
+              
               <li
                 className="p-2 text-dark d-flex justify-content-between align-items-center"
                 style={{ cursor: "pointer" }}
@@ -65,10 +68,25 @@ const NavBar = () => {
                 <span className="ms-2">{openSettings ? "▴" : "▾"}</span>
               </li>
 
-              {/* Submenu Configurações */}
+              {/* Submenu Configurações – SEM PROTEÇÃO */}
               {openSettings && (
                 <li className="pb-2">
                   <ul className="list-unstyled m-0 ps-3">
+
+                    <li
+                      className="p-2 text-dark"
+                      style={{ cursor: "pointer" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f7f7f7")}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                      onClick={() => {
+                        setShowUsuarioModal(true);
+                        setOpen(false);
+                        setOpenSettings(false);
+                      }}
+                    >
+                      • Gerenciamento de Usuários
+                    </li>
+
                     <li
                       className="p-2 text-dark"
                       style={{ cursor: "pointer" }}
@@ -82,6 +100,7 @@ const NavBar = () => {
                     >
                       • Custo por hora dos devs
                     </li>
+
                   </ul>
                 </li>
               )}
@@ -91,10 +110,11 @@ const NavBar = () => {
                 style={{ cursor: "pointer" }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f1f1f1")}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-                onClick={() => {/* coloque aqui a lógica de sair */}}
+                onClick={() => {}}
               >
                 🚪 Sair
               </li>
+
             </ul>
           </div>
         )}
@@ -104,10 +124,12 @@ const NavBar = () => {
       <ModalCustoDev
         show={showCustoModal}
         onClose={() => setShowCustoModal(false)}
-        onSaveSuccess={() => {
-          // aqui futuramente você pode disparar um refetch das métricas/dashboards
-          // ex.: queryClient.invalidateQueries(['metrics'])
-        }}
+      />
+
+      {/* Modal de Usuários */}
+      <ModalUsuario
+        show={showUsuarioModal}
+        onClose={() => setShowUsuarioModal(false)}
       />
     </>
   );
