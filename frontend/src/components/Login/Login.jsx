@@ -76,7 +76,7 @@ export default function Login() {
                 type="email"
                 id="email"
                 className="form-control"
-                placeholder="seu@email.com"
+                placeholder="email@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
