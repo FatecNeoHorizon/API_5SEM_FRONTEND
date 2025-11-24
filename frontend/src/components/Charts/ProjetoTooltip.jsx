@@ -18,7 +18,7 @@ export default function ProjetoTooltip({ active, payload })
     if (!active || !payload || !payload.length) return null;
     const row = payload[0]?.payload || {};
     const nome = row.task || row.projeto || "Projeto";
-    const horas = row.horas ?? "-";
+    const horas = typeof row.horas === "number" ? row.horas.toFixed(2) : row.horas ?? "-";
     return (
       <div className="bg-white border rounded p-2 shadow-sm small">
         <div className="fw-semibold">{nome}</div>
