@@ -1,9 +1,6 @@
-import axios from "axios";
+import api from "../axios";
 import { DimProjeto } from "../DimProjeto";
 import { DimDev } from "../DimDev";
-
-const API_BASE = `${process.env.REACT_APP_API_URL}/fato-custo-hora`;
-const APONTAMENTO_HORAS_BASE = `${process.env.REACT_APP_API_URL}/fato-apontamento-horas`;
 
 // --------------------------
 // Horas por projeto
@@ -20,7 +17,7 @@ export const getHorasPorProjeto = async () => {
       params.append("periodo_id", "0");
       params.append("dev_id", "0");
 
-      const res = await axios.get(`${API_BASE}/filter`, { params });
+      const res = await api.get("/fato-custo-hora/filter", { params });
       const fatoCustoHora = res.data || [];
 
       const totalHoras = fatoCustoHora.reduce((acc, cur) => acc + cur.horasQuantidade, 0);
@@ -53,7 +50,7 @@ export const getHorasPorDev = async () => {
       params.append("periodo_id", "0");
       params.append("dev_id", dev.id);
 
-      const res = await axios.get(`${API_BASE}/filter`, { params });
+      const res = await api.get("/fato-custo-hora/filter", { params });
       const fatoCustoHora = res.data || [];
 
       const totalHoras = fatoCustoHora.reduce((acc, cur) => acc + cur.horasQuantidade, 0);
@@ -75,7 +72,7 @@ export const getHorasPorDev = async () => {
 // --------------------------
 export const getHorasPorPeriodo = async (periodo = "mes") => {
   try {
-    let { data } = await axios.get(API_BASE);
+    let { data } = await api.get("/fato-custo-hora");
     data = data.filter(d => removerPeriodoCoringa(d.dimPeriodo));
     let dadosFiltrados = [...data];
 
@@ -193,7 +190,7 @@ export const getTotalBugs = async () => {
       return { total: 0, items: [] };
     }
 
-    let { data } = await axios.get(APONTAMENTO_HORAS_BASE);
+    let { data } = await api.get("/fato-apontamento-horas");
     data = data.filter(d => puxarApenasTipoErro(d.dimTipo));
      // data = data.filter(d => removerPeriodoCoringa(d.dimPeriodo));
     let dadosFiltrados = [...data];
@@ -216,13 +213,13 @@ export const getTotalManutencao = async () => {
       return { total: 0, items: [] };
     }
 
-    let { data } = await axios.get(APONTAMENTO_HORAS_BASE);
+    let { data } = await api.get("/fato-apontamento-horas");
     data = data.filter(d => puxarApenasTipoErro(d.dimTipo));
      // data = data.filter(d => removerPeriodoCoringa(d.dimPeriodo));
     let dadosFiltrados = [...data];
     const totalHoras = dadosFiltrados.reduce((acc, cur) => acc + cur.horasTrabalhadas, 0);
     
-    return { total: totalHoras};
+    return { total: Math.round(totalHoras * 100) / 100 };
   } catch (error) {
     console.error("Falha ao buscar tipos 'Erro' em /dim-tipo/nome/Erro:", error);
     return { total: 0};
@@ -234,7 +231,7 @@ export const getTotalManutencao = async () => {
 // --------------------------
 export const getBugsXManutencaoPorPeriodo = async (periodo = "mes") => {
   try {
-    let { data } = await axios.get(APONTAMENTO_HORAS_BASE);
+    let { data } = await api.get("/fato-apontamento-horas");
     data = data.filter(d => puxarApenasTipoErro(d.dimTipo));
     data = data.filter(d => removerPeriodoCoringa(d.dimPeriodo));
     let dadosFiltrados = [...data];
