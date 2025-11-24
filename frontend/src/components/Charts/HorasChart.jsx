@@ -202,7 +202,7 @@ export default function HorasChart() {
                                             height={80}
                                         />
                                         <YAxis />
-                                        <Tooltip />
+                                        <Tooltip formatter={(value) => [typeof value === "number" ? value.toFixed(2) : value, ""]} labelFormatter={(label) => `Período: ${label}`} />
                                         <Legend
                                             iconType="square"
                                             wrapperStyle={{ paddingTop: 10 }}
@@ -368,7 +368,7 @@ export default function HorasChart() {
                                         />
                                         <YAxis />
                                         <Tooltip
-                                            formatter={value => [value, "Horas"]}
+                                            formatter={value => [Number(value).toFixed(2), "Horas"]}
                                             labelFormatter={label =>
                                                 `Período: ${label}`
                                             }

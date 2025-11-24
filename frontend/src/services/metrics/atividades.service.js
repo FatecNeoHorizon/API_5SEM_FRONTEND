@@ -1,13 +1,11 @@
-import axios from "axios";
-
-const BASE_URL = process.env.REACT_APP_API_URL;
+import api from "../axios";
 
 // --------------------------
 // Total de atividades
 // --------------------------
 export const getTotalAtividades = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/fato-atividade/total`);
+    const response = await api.get("/fato-atividade/total");
     return {
       success: true,
       data: { total: response.data },
@@ -27,7 +25,7 @@ export const getTotalAtividades = async () => {
 export const getAtividadesPorProjeto = async () => {
   try {
     const [proj] = await Promise.all([
-      axios.get(`${BASE_URL}/fato-atividade/por-projeto`),
+      api.get("/fato-atividade/por-projeto"),
     ]);
 
     const lista = Array.isArray(proj.data)
@@ -60,7 +58,7 @@ export const getAtividadesPorPeriodo = async (periodo) => {
 
   const params = { dataInicio, dataFim, periodo };
 
-  const { data } = await axios.get(`${BASE_URL}/fato-atividade/agregado`, { params });
+  const { data } = await api.get("/fato-atividade/agregado", { params });
 
   let lista = data.map((item) => ({
     periodo: item.projectName,
@@ -155,10 +153,10 @@ export const getHorasPorDev = async (params = {}) => {
   if (params.to) queryParams.to = params.to;
 
   const qs = new URLSearchParams(queryParams).toString();
-  const url = qs ? `${BASE_URL}/metrics/dev-hours?${qs}` : `${BASE_URL}/metrics/dev-hours`;
+  const url = qs ? `/metrics/dev-hours?${qs}` : "/metrics/dev-hours";
 
   try {
-    const response = await axios.get(url);
+    const response = await api.get(url);
     return { success: true, data: response.data || [] };
   } catch (error) {
     console.error("Erro ao buscar horas por dev:", error);
@@ -172,12 +170,27 @@ export const toStackedByDay = (items) => {
 
   (items || []).forEach((dev) => {
     (dev.atividades || []).forEach((atv) => {
-      allActivities.add(atv.atividadeNome);
+      let totalHoursForActivity = 0;
       (atv.diasApontamentos || []).forEach((dia) => {
-        const d = dia.data;
-        if (!byDate[d]) byDate[d] = {};
-        byDate[d][atv.atividadeNome] = (byDate[d][atv.atividadeNome] || 0) + (dia.horas || 0);
+        const horas = dia.horas || 0;
+        totalHoursForActivity += horas;
       });
+      
+      // Só adiciona atividade se tiver horas totais > 0
+      if (totalHoursForActivity > 0) {
+        allActivities.add(atv.atividadeNome);
+        
+        (atv.diasApontamentos || []).forEach((dia) => {
+          const d = dia.data;
+          const horas = dia.horas || 0;
+          
+          // Apenas adiciona horas se > 0
+          if (horas > 0) {
+            if (!byDate[d]) byDate[d] = {};
+            byDate[d][atv.atividadeNome] = (byDate[d][atv.atividadeNome] || 0) + horas;
+          }
+        });
+      }
     });
   });
 

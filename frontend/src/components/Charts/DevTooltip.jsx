@@ -18,14 +18,15 @@ export default function DevTooltip({ active, payload })
     if (!active || !payload || !payload.length) return null;
     const row = payload[0]?.payload || {};
     const nome = row.dev || "Dev";
-    const horas = row.horas ?? "-";
+    const horas = typeof row.horas === "number" ? row.horas.toFixed(2) : row.horas ?? "-";
     const dias = row.diasTrabalhados ?? undefined;
-    const atividades = Array.isArray(row.atividades) ? row.atividades.slice(0, 2).join(", ") : undefined;
+    // Mostrar apenas a atividade principal (primeira do array)
+    const atividade = Array.isArray(row.atividades) && row.atividades.length > 0 ? row.atividades[0] : undefined;
     return (
       <div className="bg-white border rounded p-2 shadow-sm small">
         <div className="fw-semibold">{nome}</div>
         <div>Horas: {horas}h{typeof dias === "number" ? ` • ${dias} dias` : ""}</div>
-        {atividades ? <div>Atividades: {atividades}</div> : null}
+        {atividade ? <div>Atividade: {atividade}</div> : null}
       </div>
     );
 }

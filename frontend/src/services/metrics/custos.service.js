@@ -1,10 +1,4 @@
-import axios from "axios";
-
-const API_BASE = `${process.env.REACT_APP_API_URL}/fato-custo-hora`;
-
-const api = axios.create({
-  baseURL: API_BASE,
-});
+import api from "../axios";
 
 // --------------------------
 // Total de custos
@@ -24,7 +18,7 @@ const excluiNaoAtribuido = (arr) =>
 
 export async function getTotalCusto() {
   try {
-    const res = await api.get("/total");
+    const res = await api.get("/fato-custo-hora/total");
     return res.data;
   } catch (err) {
     throw new Error("Falha ao buscar total de custos");
@@ -36,7 +30,7 @@ export async function getTotalCusto() {
 // --------------------------
 export async function getCustoPorProjeto() {
   try {
-    const res = await api.get("/total-por-projeto");
+    const res = await api.get("/fato-custo-hora/total-por-projeto");
     return res.data;
   } catch (err) {
     throw new Error("Falha ao buscar custo por projeto");
@@ -48,7 +42,7 @@ export async function getCustoPorProjeto() {
 // --------------------------
 export async function getCustoPorDev() {
   try {
-    const res = await api.get("/por-dev");
+    const res = await api.get("/fato-custo-hora/por-dev");
     return excluiNaoAtribuido(res.data);
   } catch (err) {
     throw new Error("Falha ao buscar custo por dev");
@@ -60,7 +54,7 @@ export async function getCustoPorDev() {
 // --------------------------
 export async function getEvolucaoCustos(granularidade = "mes") {
   try {
-    const res = await api.get("/evolucao", { params: { granularidade } });
+    const res = await api.get("/fato-custo-hora/evolucao", { params: { granularidade } });
     return res.data;
   } catch (err) {
     throw new Error("Falha ao buscar evolução de custos");
