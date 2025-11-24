@@ -37,7 +37,7 @@ const NavBar = () => {
     if (user) console.debug("[NavBar] user roles:", roles);
   }, [user]);
 
-  const canSeeSettings = roles.includes("ADMIN") || roles.includes("ETL");
+  const canSeeSettings = roles.includes("ADMIN") || roles.includes("MANAGER") || roles.includes("ETL");
 
   const displayEmail =
     user?.UserDetails?.email || user?.email || user?.sub || "user@domain.com";
