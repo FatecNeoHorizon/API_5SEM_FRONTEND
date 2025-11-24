@@ -13,6 +13,7 @@ import {
   Legend
 } from "recharts";
 import Hint from "../Hint/Hint";
+import StackedBarTooltip from "./StackedBarTooltip";
 import {
   getTotalAtividades,
   getAtividadesPorProjeto,
@@ -365,7 +366,7 @@ export default function AtividadesChart() {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                       <YAxis tick={{ fontSize: 12 }} label={{ value: "Horas", angle: -90, position: "insideLeft", offset: 10 }} />
-                      <Tooltip formatter={(value, name) => [`${Number(value).toFixed(2)} h`, name]} labelFormatter={label => `Dia: ${label}`} />
+                      <Tooltip content={<StackedBarTooltip />} />
                       <Legend wrapperStyle={{ fontSize: 12 }} />
                       {activities.map(k => (<Bar key={k} dataKey={k} stackId="a" fill={colorFor(k)} />))}
                     </BarChart>
