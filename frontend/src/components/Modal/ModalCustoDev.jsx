@@ -1,5 +1,6 @@
 import React from "react";
 import { listDevs, updateDev, listFatos, updateFato } from "../../services/metrics/modal.service";
+import Hint from "../Hint/Hint";
 
 const EX_IDS = new Set([1]);
 const EX_NAMES = new Set(["Não atribuido", "Nao atribuido", "Não Atribuido", "Nao Atribuido"]);
@@ -115,7 +116,14 @@ export default function ModalCustoDev({ show, onClose, onSaveSuccess }) {
         <div className="modal-dialog modal-xl modal-dialog-centered" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Custo por Hora — Desenvolvedores</h5>
+              <div className="d-flex align-items-center gap-2">
+                <h5 className="modal-title">Custo por Hora — Desenvolvedores</h5>
+                <Hint 
+                  text="Configure o custo por hora de cada desenvolvedor. Ao salvar, todos os custos históricos serão recalculados automaticamente com base nos novos valores."
+                  position="bottom"
+                  size="sm"
+                />
+              </div>
               <button type="button" className="btn-close" aria-label="Close" onClick={onClose} />
             </div>
 
@@ -133,7 +141,16 @@ export default function ModalCustoDev({ show, onClose, onSaveSuccess }) {
                       <thead className="table-light" style={{ position: "sticky", top: 0, zIndex: 1 }}>
                         <tr>
                           <th style={{ width: "60%" }}>Desenvolvedor</th>
-                          <th style={{ width: "40%" }}>Custo por hora (R$)</th>
+                          <th style={{ width: "40%" }}>
+                            <div className="d-flex align-items-center gap-2">
+                              <span>Custo por hora (R$)</span>
+                              <Hint 
+                                text="Valor em reais cobrado por hora de trabalho. Este valor será multiplicado pelas horas trabalhadas para calcular o custo total."
+                                position="left"
+                                size="sm"
+                              />
+                            </div>
+                          </th>
                         </tr>
                       </thead>
                       <tbody>

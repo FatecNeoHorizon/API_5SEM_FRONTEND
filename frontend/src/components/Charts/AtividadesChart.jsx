@@ -12,6 +12,8 @@ import {
   Tooltip,
   Legend
 } from "recharts";
+import Hint from "../Hint/Hint";
+import StackedBarTooltip from "./StackedBarTooltip";
 import {
   getTotalAtividades,
   getAtividadesPorProjeto,
@@ -196,7 +198,14 @@ export default function AtividadesChart() {
         <div className="col-12 w-100 col-md-3">
           <div className="card text-center shadow-sm">
             <div className="card-body d-flex flex-column justify-content-center align-items-center">
-              <h5 className="card-subtitle text-muted mb-1 fs-7 fw-semibold">📋 Total de Atividades</h5>
+              <div className="d-flex align-items-center gap-1 justify-content-center mb-1">
+                <h5 className="card-subtitle text-muted mb-0 fs-7 fw-semibold">📋 Total de Atividades</h5>
+                <Hint 
+                  text="Quantidade total de atividades registradas no sistema, incluindo todas as tarefas concluídas em todos os projetos." 
+                  position="bottom"
+                  size="sm"
+                />
+              </div>
               <div className="display-6 text-primary fw-bold">{totalAtividades}</div>
             </div>
           </div>
@@ -206,7 +215,14 @@ export default function AtividadesChart() {
         <div className="col-2 col-md-3">
           <div className="card h-100">
             <div className="card-header">
-              <h6 className="mb-0 fs-5 fw-semibold">🕒 Atividades por Projeto</h6>
+              <div className="d-flex align-items-center gap-2">
+                <h6 className="mb-0 fs-5 fw-semibold">🕒 Atividades por Projeto</h6>
+                <Hint 
+                  text="Distribuição de atividades entre os diferentes projetos. Cada fatia representa a proporção de atividades de um projeto em relação ao total." 
+                  position="bottom"
+                  size="sm"
+                />
+              </div>
             </div>
             <div className="card-body d-flex justify-content-center align-items-center">
               <ResponsiveContainer width="100%" height={250}>
@@ -234,7 +250,14 @@ export default function AtividadesChart() {
         <div className="col-9">
           <div className="card">
             <div className="card-header d-flex justify-content-between">
-              ✅ Atividades Realizadas por Período
+              <div className="d-flex align-items-center gap-2">
+                <span>✅ Atividades Realizadas por Período</span>
+                <Hint 
+                  text="Evolução das atividades ao longo do tempo. Use os filtros para visualizar por dia, semana, mês ou ano e identificar períodos de maior produtividade." 
+                  position="bottom"
+                  size="sm"
+                />
+              </div>
               <div className="btn-group btn-group-sm">
                 {opcoesPeriodo.map(({ key, label }) => (
                   <React.Fragment key={key}>
@@ -271,28 +294,63 @@ export default function AtividadesChart() {
         <div className="w-100">
           <div className="card shadow-sm h-100">
             <div className="card-header">
-              <h6 className="mb-0 fs-5 fw-semibold">👨‍💻 Desenvolvedor - Atividade/Dia</h6>
+              <div className="d-flex align-items-center gap-2">
+                <h6 className="mb-0 fs-5 fw-semibold">👨‍💻 Desenvolvedor - Atividade/Dia</h6>
+                <Hint 
+                  text="Gráfico empilhado mostrando as horas trabalhadas por desenvolvedor e atividade ao longo dos dias. Use os filtros para analisar períodos específicos ou desenvolvedores individuais." 
+                  position="bottom"
+                  size="sm"
+                />
+              </div>
             </div>
             <div className="card-body">
               <div className="d-flex flex-wrap align-items-end gap-3 mb-3">
                 <div>
-                  <label className="form-label mb-1">Desenvolvedor</label>
+                  <div className="d-flex align-items-center gap-1 mb-1">
+                    <label className="form-label mb-0">Desenvolvedor</label>
+                    <Hint 
+                      text="Filtre por desenvolvedor específico ou selecione 'Todos' para visualizar a equipe completa." 
+                      position="right"
+                      size="sm"
+                    />
+                  </div>
                   <select className="form-select" value={dev} onChange={e => setDev(e.target.value)}>
                     {devs.map(o => (<option key={o.value} value={o.value}>{o.label}</option>))}
                   </select>
                 </div>
                 <div>
-                  <label className="form-label mb-1">Atividade</label>
+                  <div className="d-flex align-items-center gap-1 mb-1">
+                    <label className="form-label mb-0">Atividade</label>
+                    <Hint 
+                      text="Filtre por tipo de atividade específica ou selecione 'Todas' para ver o panorama completo das tarefas realizadas." 
+                      position="right"
+                      size="sm"
+                    />
+                  </div>
                   <select className="form-select" value={activity} onChange={e => setActivity(e.target.value)}>
                     {activitiesOpt.map(o => (<option key={o.value} value={o.value}>{o.label}</option>))}
                   </select>
                 </div>
                 <div>
-                  <label className="form-label mb-1">De</label>
+                  <div className="d-flex align-items-center gap-1 mb-1">
+                    <label className="form-label mb-0">De</label>
+                    <Hint 
+                      text="Data inicial do período de análise. Selecione a partir de quando deseja visualizar os dados." 
+                      position="right"
+                      size="sm"
+                    />
+                  </div>
                   <input type="date" className="form-control" value={from} max={to} onChange={e => setFrom(e.target.value)} />
                 </div>
                 <div>
-                  <label className="form-label mb-1">Até</label>
+                  <div className="d-flex align-items-center gap-1 mb-1">
+                    <label className="form-label mb-0">Até</label>
+                    <Hint 
+                      text="Data final do período de análise. Defina até quando deseja visualizar os dados." 
+                      position="right"
+                      size="sm"
+                    />
+                  </div>
                   <input type="date" className="form-control" value={to} min={from} onChange={e => setTo(e.target.value)} />
                 </div>
               </div>
@@ -308,7 +366,7 @@ export default function AtividadesChart() {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                       <YAxis tick={{ fontSize: 12 }} label={{ value: "Horas", angle: -90, position: "insideLeft", offset: 10 }} />
-                      <Tooltip formatter={(value, name) => [`${Number(value).toFixed(2)} h`, name]} labelFormatter={label => `Dia: ${label}`} />
+                      <Tooltip content={<StackedBarTooltip />} />
                       <Legend wrapperStyle={{ fontSize: 12 }} />
                       {activities.map(k => (<Bar key={k} dataKey={k} stackId="a" fill={colorFor(k)} />))}
                     </BarChart>
