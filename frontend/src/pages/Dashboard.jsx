@@ -13,7 +13,7 @@ const Dashboard = () => {
     const raw = localStorage.getItem("userPayload");
     const user = raw ? JSON.parse(raw) : null;
     const roles = extractRoles(user);
-    canSeeCustos = roles.includes("ADMIN") || roles.includes("ETL");
+    canSeeCustos = roles.includes("ADMIN") || roles.includes("MANAGER") || roles.includes("ETL");
   } catch (e) {
     console.warn("Erro ao ler roles do localStorage", e);
   }
